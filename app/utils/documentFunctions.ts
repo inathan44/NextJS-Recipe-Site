@@ -30,7 +30,7 @@ export async function createRecipeDoc(
     // Change ingredients to correct format
     const newIngredients = ingredients.split(/,\s*|,/);
     let newTags;
-    if (tags) newTags = tags.split(/,\s*|,/);
+    newTags = tags.split(/,\s*|,/);
 
     // Checking type validity
     const recipeToAdd: Recipe = {
@@ -162,7 +162,7 @@ export async function updateRecipe(
   // Change ingredients to correct format
   const newIngredients = ingredients.split(/,\s*|,/);
   let newTags;
-  if (tags) newTags = tags.split(/,\s*|,/);
+  newTags = tags.split(/,\s*|,/);
 
   // Checking type validity
   const recipeToAdd: Recipe = {
