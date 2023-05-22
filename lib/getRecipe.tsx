@@ -9,7 +9,16 @@ export default async function getRecipe(
 
     const recipe = await getDoc(recipeRef);
 
-    return { id: recipe.id, ...recipe.data() };
+    return {
+      id: recipe.id,
+      name: '',
+      directions: [],
+      ingredients: [],
+      images: [],
+      tags: [],
+      description: '',
+      ...recipe.data(),
+    };
   } catch (error: any) {
     console.log(error.message);
   }

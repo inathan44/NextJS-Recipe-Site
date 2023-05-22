@@ -10,13 +10,9 @@ export default async function Recipes() {
   const recipes = await recipesData;
 
   return (
-    <div className='mx-auto flex max-w-7xl flex-wrap gap-x-8 gap-y-8'>
+    <div className='mx-auto flex max-w-7xl flex-wrap gap-x-8 gap-y-8 '>
       {recipes?.map((recipe) => {
-        return (
-          <>
-            <RecipeCard recipe={recipe} key={recipe.id} />
-          </>
-        );
+        return <RecipeCard recipe={recipe} key={recipe.id} />;
       })}
     </div>
   );

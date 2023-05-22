@@ -8,7 +8,16 @@ export default async function getAllRecipes() {
     const recipes: Recipe[] = [];
 
     snapshot.docs.forEach((doc) => {
-      recipes.push({ ...doc.data(), id: doc.id });
+      recipes.push({
+        id: doc.id,
+        name: '',
+        ingredients: [],
+        directions: [],
+        images: [],
+        tags: [],
+        description: '',
+        ...doc.data(),
+      });
     });
     return recipes;
   } catch (e: any) {
