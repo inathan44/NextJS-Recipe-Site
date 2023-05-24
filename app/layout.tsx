@@ -1,6 +1,7 @@
 import NavBar from './components/NavBar';
+import Footer from './components/Footer';
 import './globals.css';
-import { Inter } from '@next/font/google';
+import { Inter } from 'next/font/google';
 
 export const metadata = {
   title: 'Zachs recipe app',
@@ -18,9 +19,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body className={`${inter.className}`}>
+      <body className={`${inter.className} bg-primary-light`}>
         <NavBar />
         <div>{children}</div>
+        <Footer />
       </body>
     </html>
   );
