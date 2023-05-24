@@ -3,14 +3,19 @@ import Link from 'next/link';
 
 export default function NavBar() {
   return (
-    <nav className='flex items-center justify-between border-b-2 p-3'>
+    <nav className='flex items-center justify-between p-3'>
       <Link href={'/'}>
         <h1 className='text-3xl'>
           CLEAN<span className='text-slate-700'>PL8.</span>
         </h1>
       </Link>
       <div>
-        <Link href={'recipes'}>All Recipes</Link>
+        <Link
+          className='border-darker-dark text-xl font-bold hover:border-b-2'
+          href={'recipes'}
+        >
+          Recipes
+        </Link>
       </div>
     </nav>
   );

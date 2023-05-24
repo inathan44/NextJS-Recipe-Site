@@ -9,12 +9,11 @@ export default function Home() {
         <div className='flex'>
           <div className='mx-12 flex w-1/2 flex-col justify-center gap-6'>
             <h1 className='max-w-md text-5xl font-bold'>
-              Omg Zach{`'`}s favorite recipes of all time!
+              Recipes, without all of the clutter.
             </h1>
             <h2 className='max-w-lg'>
-              Find recipes that are spicy, easy, tasty, or all three! With
-              recipes sorted by category, it will be so easy to find the next
-              meal for dinner time.
+              A recipe site without ads, clutter, or useless information. Find
+              your next meal with an easy to use platform.
             </h2>
             <Link href={'recipes'}>
               <p className='inline-block rounded-full bg-red-300 px-8 py-2 text-xl font-bold'>
