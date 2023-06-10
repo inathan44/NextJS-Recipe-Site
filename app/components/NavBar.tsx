@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import MenuIcon from './MenuIcon';
 
 export default function NavBar() {
   return (
@@ -11,11 +12,14 @@ export default function NavBar() {
       </Link>
       <div>
         <Link
-          className='border-darker-dark text-xl font-bold hover:border-b-2'
+          className='hidden border-darker-dark text-xl font-bold hover:border-b-2 md:block'
           href={'recipes'}
         >
           Recipes
         </Link>
+      </div>
+      <div className='md:hidden'>
+        <MenuIcon />
       </div>
     </nav>
   );
