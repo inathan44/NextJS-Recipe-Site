@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer className='bg-primary-dark p-4 text-primary-light'>
+    <footer className='bg-darker-dark p-4 text-primary-light'>
       <div className='flex flex-col items-center justify-between md:flex-row md:items-start'>
         <Link href={'/'} className='text-3xl text-primary-light'>
           CLEAN<span className='text-lighter-light'>PL8.</span>
