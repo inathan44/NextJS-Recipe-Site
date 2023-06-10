@@ -10,9 +10,9 @@ export default function RecipeCard(props: RecipeCardProps) {
   const { recipe } = props;
   return (
     <div className='max-w-96 flex h-[500px] w-full flex-col p-3 transition-all hover:bg-yellow-500'>
-      {recipe.images && recipe.images.length > 0 && (
+      {recipe.image && (
         <Image
-          src={recipe.images[0]}
+          src={recipe.image}
           alt={`Photo of ${recipe.name}`}
           width={100}
           height={100}
