@@ -4,26 +4,35 @@ import React, { useState, useEffect } from 'react';
 import {
   createRecipeDoc,
   uploadImages,
+  deleteRecipe,
+  editImages,
   handleDirectionsChange,
+  updateRecipe,
   addDirection,
+  handleIngredientsChange,
+  addIngredient,
+  handleMeasurementsChange,
+  handleAmountsChange,
 } from '@/app/utils/documentFunctions';
 
 export default function AddRecipe() {
   const [name, setName] = useState<string>('');
   const [directions, setDirections] = useState<string[]>(['']);
-  const [ingredients, setIngredients] = useState<string>('');
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [images, setImages] = useState<null | FileList>(null);
+  const [ingredients, setIngredients] = useState<string[]>([]);
+  const [imageUrl, setImageUrl] = useState<string>('');
+  const [image, setImage] = useState<null | File>(null);
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
   const [addDocLoading, setAddDocLoading] = useState<boolean>(false);
   const [addDocError, setAddDocError] = useState<string>('');
   const [tags, setTags] = useState<string>('');
   const [description, setDescription] = useState<string>('');
+  const [measurements, setMeasurements] = useState<string[]>([]);
+  const [amounts, setAmounts] = useState<number[]>([]);
 
   useEffect(() => {
-    images && uploadImages(images, setImageUrls, setUploadLoading);
+    image && uploadImages(image, setImageUrl, setUploadLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [images]);
+  }, [image]);
 
   return (
     <div className='flex h-screen items-center justify-center'>
@@ -46,16 +55,59 @@ export default function AddRecipe() {
             name='images'
             id='images'
             multiple
-            onChange={(e) => setImages(e.target.files)}
+            onChange={(e) =>
+              setImage(e.target.files ? e.target.files[0] : null)
+            }
           />
-          <label className='block' htmlFor='ingredients'>
-            Ingredients (separated by comma)
-          </label>
-          <input
-            type='text'
-            value={ingredients}
-            onChange={(e) => setIngredients(e.target.value)}
-          />
+          {/* Ingredients Section */}
+          <div className='mt-6'>
+            <div className='mt-1 flex items-center gap-5'>
+              <h1 className='block text-lg font-semibold'>Ingredients</h1>
+              <button
+                className=''
+                type='button'
+                onClick={() => addIngredient(setIngredients)}
+              >
+                Add
+              </button>
+            </div>
+            {ingredients.map((ingredient, idx) => (
+              <div className='flex gap-3' key={idx}>
+                <input
+                  type='text'
+                  value={ingredient}
+                  onChange={(e) =>
+                    handleIngredientsChange(e, idx, ingredients, setIngredients)
+                  }
+                  placeholder={`${idx + 1}.) ingredient`}
+                  className='h-10 w-full rounded border px-3 text-xl'
+                />
+                <input
+                  type='text'
+                  value={measurements[idx]}
+                  onChange={(e) =>
+                    handleMeasurementsChange(
+                      e,
+                      idx,
+                      measurements,
+                      setMeasurements
+                    )
+                  }
+                  placeholder={`${idx + 1}.) Unit`}
+                  className='h-10 w-full rounded border px-3 text-xl'
+                />
+                <input
+                  type='number'
+                  value={amounts[idx]}
+                  onChange={(e) =>
+                    handleAmountsChange(e, idx, amounts, setAmounts)
+                  }
+                  placeholder={`${idx + 1}.) Amount`}
+                  className='h-10 w-full rounded border px-3 text-xl'
+                />
+              </div>
+            ))}
+          </div>
           <label className='block' htmlFor='description'>
             Description
           </label>
@@ -97,20 +149,24 @@ export default function AddRecipe() {
           disabled={uploadLoading}
           onClick={() =>
             createRecipeDoc(
-              imageUrls,
+              imageUrl,
               ingredients,
               directions,
               name,
               setName,
               setDirections,
               setIngredients,
-              setImageUrls,
+              setImageUrl,
               setAddDocLoading,
               setAddDocError,
               description,
               tags,
               setTags,
-              setDescription
+              setDescription,
+              amounts,
+              setAmounts,
+              measurements,
+              setMeasurements
             )
           }
         >

@@ -14,7 +14,7 @@ export default async function getRecipe(
       name: '',
       directions: [],
       ingredients: [],
-      images: [],
+      image: '',
       tags: [],
       description: '',
       ...recipe.data(),
