@@ -5,9 +5,10 @@ type Recipe = {
   directions: string[];
   image: string;
   tags: string[];
-  description: string;
+  description?: string;
   cookTime?: number;
   prepTime?: number;
+  servings?: number;
 };
 
 type Ingredient = {
