@@ -1,23 +1,25 @@
 import { getDocs } from 'firebase/firestore';
 import { recipeRef } from '@/firebaseConfig';
 
-export default async function getAllRecipes() {
+export default async function getAllRecipes(searchTerm: string) {
   try {
     const snapshot = await getDocs(recipeRef);
 
     const recipes: Recipe[] = [];
 
     snapshot.docs.forEach((doc) => {
-      recipes.push({
-        id: doc.id,
-        name: '',
-        ingredients: [],
-        directions: [],
-        images: [],
-        tags: [],
-        description: '',
-        ...doc.data(),
-      });
+      if (doc.data().name.includes(searchTerm.toLowerCase())) {
+        recipes.push({
+          id: doc.id,
+          name: '',
+          ingredients: [],
+          directions: [],
+          image: '',
+          tags: [],
+          description: '',
+          ...doc.data(),
+        });
+      }
     });
     return recipes;
   } catch (e: any) {

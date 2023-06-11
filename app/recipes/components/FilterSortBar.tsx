@@ -1,16 +1,87 @@
+'use client';
+
+import router, { usePathname, useRouter } from 'next/navigation';
 import SearchIcon from '@/app/components/SearchIcon';
 import FiltersIcon from '@/app/components/FiltersIcon';
+import {
+  FormEvent,
+  useCallback,
+  useTransition,
+  useState,
+  useEffect,
+} from 'react';
 
 const FilterSortBar = () => {
+  const [inputValue, setInputValue] = useState<string>('');
+  const [debouncedValue, setDebouncedValue] = useState<string>('');
+  const [mounted, setMounted] = useState<boolean>(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+  }
+
+  const handleSearchParams = useCallback(
+    (debouncedValue: string) => {
+      let params = new URLSearchParams(window.location.search);
+
+      if (debouncedValue.length > 0) {
+        params.set('search', debouncedValue);
+      } else {
+        params.delete('search');
+      }
+
+      startTransition(() => {
+        router.replace(`${pathname}?${params.toString()}`);
+      });
+    },
+    [pathname, router]
+  );
+
+  // EFFECT: Set Initial Params
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const searchQuery = params.get('search') ?? '';
+    setInputValue(searchQuery);
+  }, []);
+
+  useEffect(() => {
+    if (debouncedValue.length > 0 && !mounted) {
+      setMounted(true);
+    }
+  }, [debouncedValue, mounted]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(inputValue);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [inputValue]);
+
+  useEffect(() => {
+    if (mounted) handleSearchParams(debouncedValue);
+  }, [debouncedValue, handleSearchParams, mounted]);
+
   return (
     <div className='mx-6 mt-12 border-darker-dark'>
       <div className='flex items-center gap-4 border-b border-darker-dark pb-2'>
         <SearchIcon />
-        <input
-          type='text'
-          className='w-full bg-transparent active:border-transparent'
-          placeholder='Search Recipes'
-        />
+        <form className='w-full'>
+          <input
+            type='text'
+            className='w-full bg-transparent active:border-transparent'
+            placeholder='Search Recipes'
+            value={inputValue}
+            onChange={(e) => {
+              setInputValue(e.target.value);
+            }}
+          />
+        </form>
         <FiltersIcon />
       </div>
     </div>

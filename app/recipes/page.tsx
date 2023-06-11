@@ -5,8 +5,14 @@ import getAllRecipes from '@/lib/getAllRecipes';
 import RecipeCard from './components/RecipeCard';
 import FilterSortBar from './components/FilterSortBar';
 
-export default async function Recipes() {
-  const recipesData: Promise<Recipe[] | undefined> = getAllRecipes();
+export default async function Recipes({
+  searchParams,
+}: {
+  searchParams: { search?: string };
+}) {
+  const searchQuery = searchParams.search ?? '';
+
+  const recipesData: Promise<Recipe[] | undefined> = getAllRecipes(searchQuery);
 
   const recipes = await recipesData;
 
