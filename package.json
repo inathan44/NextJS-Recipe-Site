@@ -17,6 +17,7 @@
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
     "firebase": "^9.20.0",
+    "lodash": "^4.17.21",
     "next": "13.3.1",
     "postcss": "8.4.23",
     "react": "18.2.0",
@@ -29,6 +30,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.195",
     "@types/uuid": "^9.0.1",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.7"
