@@ -109,8 +109,6 @@ export default function EditRecipe({ params: { recipeId } }: Params) {
   }, [image]);
 
   const onSubmit: SubmitHandler<RecipeSchema> = (data) => {
-    console.log('data', data);
-
     toast.promise(
       updateRecipe(imageUrl, setAddDocLoading, setAddDocError, data, recipeId),
       {
