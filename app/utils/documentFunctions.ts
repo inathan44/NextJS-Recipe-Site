@@ -3,73 +3,53 @@ import { addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 import { v4 } from 'uuid';
+import { RecipeSchema } from '../models/schema';
 
 export async function createRecipeDoc(
   imageUrl: string,
-  ingredients: string[],
-  directions: string[],
-  name: string,
-  setName: React.Dispatch<React.SetStateAction<string>>,
-  setDirections: React.Dispatch<React.SetStateAction<string[]>>,
-  setIngredients: React.Dispatch<React.SetStateAction<string[]>>,
   setImageUrl: React.Dispatch<React.SetStateAction<string>>,
   setAddDocLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setAddDocError: React.Dispatch<React.SetStateAction<string>>,
-  description: string,
-  tags: string,
-  setTags: React.Dispatch<React.SetStateAction<string>>,
-  setDescription: React.Dispatch<React.SetStateAction<string>>,
-  amounts: number[],
-  setAmounts: React.Dispatch<React.SetStateAction<number[]>>,
-  measurements: string[],
-  setMeasurements: React.Dispatch<React.SetStateAction<string[]>>
+  data: RecipeSchema
 ) {
-  // Change this if to not add a recipe if it is missing any required fields
-  if (!name || !ingredients || !directions[0]) {
-    alert('must have ingredients, name, and directions');
-    return;
-  }
   try {
+    alert('Im working omg yeah!');
+
     setAddDocLoading(true);
     // Change ingredients to correct format
     // Change ingredients to correct format
-    const newIngredients = ingredients.reduce(
-      (acc: Ingredient[], cv: string, idx: number) => {
-        acc.push({
-          name: cv,
-          amount: amounts[idx],
-          measurement: measurements[idx],
-        });
-        return acc;
-      },
-      []
-    );
-
-    let newTags;
-    newTags = tags.split(/,\s*|,/);
+    // const newIngredients = ingredients.reduce(
+    //   (acc: Ingredient[], cv: string, idx: number) => {
+    //     acc.push({
+    //       name: cv,
+    //       amount: +amounts[idx],
+    //       measurement: measurements[idx],
+    //     });
+    //     return acc;
+    //   },
+    //   []
+    // );
 
     // Checking type validity
     const recipeToAdd: Recipe = {
-      name: name.toLowerCase(),
-      ingredients: newIngredients,
-      directions,
+      name: data.name,
+      ingredients: data.ingredients,
+      directions: data.directions.map(({ direction }) => direction),
       image: imageUrl,
-      tags: newTags,
-      description,
+      tags: data.tags || [],
+      description: data.description,
+      cookTime: data.cookTime,
+      prepTime: data.prepTime,
+      servings: data.servings,
     };
 
-    let recipeWithoutUndefined = Object.keys(recipeToAdd)
-      .filter((k) => recipeToAdd[k as keyof Recipe] != null)
-      .reduce((a, k) => ({ ...a, [k]: recipeToAdd[k as keyof Recipe] }), {});
+    // let recipeWithoutUndefined = Object.keys(recipeToAdd)
+    //   .filter((k) => recipeToAdd[k as keyof Recipe] != null)
+    //   .reduce((a, k) => ({ ...a, [k]: recipeToAdd[k as keyof Recipe] }), {});
 
-    await addDoc(recipeRef, recipeWithoutUndefined);
+    await addDoc(recipeRef, recipeToAdd);
 
-    setName('');
-    setDirections(['']);
-    setIngredients([]);
     setImageUrl('');
-    setTags('');
-    setDescription('');
     setAddDocError('');
     setAddDocLoading(false);
     const fileInput: any = document.getElementById('images');
@@ -176,12 +156,12 @@ export function handleMeasurementsChange(
 export function handleAmountsChange(
   e: React.ChangeEvent<HTMLInputElement>,
   idx: number,
-  amounts: number[],
-  setAmounts: React.Dispatch<React.SetStateAction<number[]>>
+  amounts: string[],
+  setAmounts: React.Dispatch<React.SetStateAction<string[]>>
 ) {
   let data = [...amounts];
 
-  data[idx] = parseInt(e.target.value);
+  data[idx] = e.target.value;
 
   setAmounts(data);
 }
@@ -206,7 +186,7 @@ export async function updateRecipe(
   imageUrl: string,
   tags: string,
   description: string,
-  amounts: number[],
+  amounts: string[],
   measurements: string[]
 ) {
   const recipeRef = doc(db, 'recipes', recipeId);
@@ -215,7 +195,7 @@ export async function updateRecipe(
   const newIngredients = ingredients.reduce((acc: Ingredient[], cv, idx) => {
     acc.push({
       name: cv.toLowerCase(),
-      amount: amounts[idx],
+      amount: +amounts[idx],
       measurement: measurements[idx].toLowerCase(),
     });
     return acc;
