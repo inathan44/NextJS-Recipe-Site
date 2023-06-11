@@ -1,16 +1,25 @@
-'use client';
+type PMProps = {
+  servings: number | undefined;
+  setNumOfServings: React.Dispatch<React.SetStateAction<number | undefined>>;
+};
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function PlusMinus() {
-  const [numOfServings, setNumOfServings] = useState<number>(1);
-
+export default function PlusMinus({
+  servings: numOfServings,
+  setNumOfServings,
+}: PMProps) {
   return (
     <div className='mx-auto flex max-w-[75px] items-center justify-between font-semibold text-lighter-dark'>
       <button
-        disabled={numOfServings <= 0}
-        className='rounded-full bg-primary-dark'
-        onClick={() => setNumOfServings((prev) => prev - 1)}
+        disabled={typeof numOfServings !== 'number' || numOfServings <= 1}
+        className='rounded-full bg-primary-dark disabled:bg-slate-500'
+        onClick={() =>
+          setNumOfServings((prev) => {
+            if (typeof prev === 'number') return prev - 1;
+            return prev;
+          })
+        }
       >
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -23,10 +32,15 @@ export default function PlusMinus() {
           <path strokeLinecap='round' strokeLinejoin='round' d='M18 12H6' />
         </svg>
       </button>
-      <p>{numOfServings}</p>
+      <p>{numOfServings || 'N/A'}</p>
       <button
         className='rounded-full bg-primary-dark'
-        onClick={() => setNumOfServings((prev) => prev + 1)}
+        onClick={() =>
+          setNumOfServings((prev) => {
+            if (typeof prev === 'number') return prev + 1;
+            return prev;
+          })
+        }
       >
         <svg
           xmlns='http://www.w3.org/2000/svg'

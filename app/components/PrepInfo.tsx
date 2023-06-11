@@ -1,16 +1,24 @@
+import React from 'react';
 import PlusMinus from './PlusMinus';
 
 type PrepInfoProps = {
   cookTime: number | undefined;
   prepTime: number | undefined;
+  servings: number | undefined;
+  setNumOfServings: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
-export default function PrepInfo({ cookTime, prepTime }: PrepInfoProps) {
+export default function PrepInfo({
+  cookTime,
+  prepTime,
+  servings,
+  setNumOfServings,
+}: PrepInfoProps) {
   return (
     <div className='border- flex grow justify-between rounded-t-3xl border-t border-gray-400 px-6 py-4 text-center text-lg font-semibold'>
       <div className='w-full'>
         <p>Servings</p>
-        <PlusMinus />
+        <PlusMinus servings={servings} setNumOfServings={setNumOfServings} />
       </div>
       <div className='w-full'>
         <p>Cook</p>

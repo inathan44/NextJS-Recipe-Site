@@ -8,6 +8,7 @@ type SectionProps = {
   children: React.ReactNode;
   name: string;
   bgColor?: string;
+  // servingsDifference: number | 'N/A';
 };
 
 export default function RecipeSection(props: SectionProps) {
