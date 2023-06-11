@@ -1,5 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { recipeSchema } from '@/app/models/schema';
+import type { RecipeSchema } from '@/app/models/schema';
 import {
   deleteRecipe,
   editImages,
@@ -24,9 +28,9 @@ type Params = {
 export default function EditRecipe({ params: { recipeId } }: Params) {
   const [name, setName] = useState<string>('');
   const [directions, setDirections] = useState<string[]>(['']);
-  const [ingredients, setIngredients] = useState<string[]>([]);
+  const [ingredients, setIngredients] = useState<string[]>(['']);
   const [measurements, setMeasurements] = useState<string[]>([]);
-  const [amounts, setAmounts] = useState<number[]>([]);
+  const [amounts, setAmounts] = useState<string[]>([]);
   const [imageUrl, setImageUrl] = useState<string>('');
   const [image, setImage] = useState<null | File>(null);
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
@@ -34,35 +38,95 @@ export default function EditRecipe({ params: { recipeId } }: Params) {
   const [addDocError, setAddDocError] = useState<string>('');
   const [tags, setTags] = useState<string>('');
   const [description, setDescription] = useState<string>('');
+  const [cookTime, setCookTime] = useState<string>('');
+  const [prepTime, setPrepTime] = useState<string>('');
+  const [servings, setServings] = useState<string>('');
+
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    control,
+    setValue,
+    formState: { errors, isValid },
+  } = useForm<RecipeSchema>({ resolver: zodResolver(recipeSchema) });
 
   const router = useRouter();
+
+  const {
+    fields: ingredientFields,
+    append: ingredientAppend,
+    prepend: ingredientPrepend,
+    remove: ingredientRemove,
+    swap: ingredientSwap,
+    move: ingredientMove,
+  } = useFieldArray({
+    control,
+    name: 'ingredients',
+  });
+
+  const { fields: directionsFields, append: directionsAppend } = useFieldArray({
+    control,
+    name: 'directions',
+  });
 
   useEffect(() => {
     const test = async () => {
       const recipeData = await getRecipe(recipeId);
-      setName(recipeData?.name || '');
-      setDirections(recipeData?.directions || ['']);
-      setIngredients(recipeData?.ingredients.map(({ name }) => name) || ['']);
-      setMeasurements(
-        recipeData?.ingredients.map(({ measurement }) => measurement) || ['']
+
+      setValue('name', recipeData?.name || '');
+      setValue('description', recipeData?.description || '');
+      setValue(
+        'servings',
+        (recipeData?.servings?.toString() || '1') as unknown as number
       );
-      setAmounts(recipeData?.ingredients.map(({ amount }) => amount) || [0]);
-      // setIngredients(recipeData?.ingredients?.join(', ') || '');
-      setTags(recipeData?.tags?.join(', ') || '');
-      setDescription(recipeData?.description || '');
+      setValue(
+        'prepTime',
+        (recipeData?.prepTime?.toString() || '1') as unknown as number
+      );
+      setValue(
+        'cookTime',
+        (recipeData?.cookTime?.toString() || '1') as unknown as number
+      );
+
+      setValue(
+        'ingredients',
+        // @ts-ignore
+        recipeData?.ingredients.map((i) => {
+          return {
+            name: i.name,
+            measurement: i.measurement,
+            amount: i.amount.toString(),
+          };
+        }) || []
+      );
+
+      setValue(
+        'tags',
+        (recipeData?.tags.join(', ') || '') as unknown as string[]
+      );
+      setValue(
+        'directions',
+        recipeData?.directions.map((item) => {
+          return { direction: item };
+        }) || []
+      );
       setImageUrl(recipeData?.image || '');
     };
     test();
-  }, [recipeId]);
+  }, [recipeId, setValue]);
 
   useEffect(() => {
     image && editImages(image, setImageUrl, setUploadLoading, imageUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image]);
 
+  const onSubmit: SubmitHandler<RecipeSchema> = (data) => {
+    console.log('data', data);
+  };
+
   return (
     <div className='mx-4'>
-      <h1 className='mb-3 text-3xl'>{name}</h1>
       <div className='flex justify-center'>
         {imageUrl && (
           <button
@@ -82,15 +146,17 @@ export default function EditRecipe({ params: { recipeId } }: Params) {
       </div>
 
       <div className='mx-auto mt-8 max-w-md'>
-        <form className='text-primary-dark'>
+        <form onSubmit={handleSubmit(onSubmit)} className='text-primary-dark'>
           <label className='mt-4 block text-lg font-semibold' htmlFor='name'>
-            Name
+            Name{' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.name?.message}
+            </span>
           </label>
           <input
+            {...register('name')}
             className='block h-10 w-full rounded border px-3 text-xl'
             type='text'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
           />
           <label className='mt-4 block text-lg font-semibold' htmlFor='images'>
             Upload photo
@@ -113,44 +179,29 @@ export default function EditRecipe({ params: { recipeId } }: Params) {
               <button
                 className=''
                 type='button'
-                onClick={() => addIngredient(setIngredients)}
+                onClick={() =>
+                  ingredientAppend({ name: '', measurement: '', amount: 0 })
+                }
               >
                 Add
               </button>
             </div>
-            {ingredients.map((ingredient, idx) => (
-              <div className='flex gap-3' key={idx}>
+            {ingredientFields.map((field, idx) => (
+              <div className='flex gap-3' key={field.id}>
                 <input
-                  type='text'
-                  value={ingredient}
-                  onChange={(e) =>
-                    handleIngredientsChange(e, idx, ingredients, setIngredients)
-                  }
-                  placeholder={`${idx + 1}.) ingredient`}
+                  placeholder={`ingredient`}
                   className='h-10 w-full rounded border px-3 text-xl'
+                  {...register(`ingredients.${idx}.name`)}
                 />
                 <input
-                  type='text'
-                  value={measurements[idx]}
-                  onChange={(e) =>
-                    handleMeasurementsChange(
-                      e,
-                      idx,
-                      measurements,
-                      setMeasurements
-                    )
-                  }
-                  placeholder={`${idx + 1}.) Unit`}
+                  placeholder={`measurement`}
                   className='h-10 w-full rounded border px-3 text-xl'
+                  {...register(`ingredients.${idx}.measurement`)}
                 />
                 <input
-                  type='number'
-                  value={amounts[idx]}
-                  onChange={(e) =>
-                    handleAmountsChange(e, idx, amounts, setAmounts)
-                  }
-                  placeholder={`${idx + 1}.) Amount`}
+                  placeholder={`amount`}
                   className='h-10 w-full rounded border px-3 text-xl'
+                  {...register(`ingredients.${idx}.amount`)}
                 />
               </div>
             ))}
@@ -162,71 +213,96 @@ export default function EditRecipe({ params: { recipeId } }: Params) {
                 <button
                   className=''
                   type='button'
-                  onClick={() => addDirection(setDirections)}
+                  onClick={() => directionsAppend({ direction: '' })}
                 >
                   Add
                 </button>
               </div>
-              {directions.map((direction, idx) => (
-                <div className='' key={idx}>
+              {directionsFields.map((field, idx) => (
+                <div className='flex gap-3' key={field.id}>
                   <input
-                    type='text'
-                    value={direction}
-                    onChange={(e) =>
-                      handleDirectionsChange(e, idx, directions, setDirections)
-                    }
                     placeholder={`${idx + 1}.) Direction`}
-                    className='block h-10 w-full rounded border px-3 text-xl'
+                    className='h-10 w-full rounded border px-3 text-xl'
+                    {...register(`directions.${idx}.direction`)}
                   />
                 </div>
               ))}
             </div>
           </div>
           <label className='mt-4 block text-lg font-semibold' htmlFor='tags'>
-            Tags (separated by comma)
+            Tags (separated by comma){' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.name?.message}
+            </span>
           </label>
           <input
             type='text'
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
             className='block h-10 w-full rounded border px-3 text-xl'
+            {...register('tags')}
           />
+          {errors.servings?.message && <p>{errors.servings.message}</p>}
+          <label className='block text-lg font-semibold' htmlFor='servings'>
+            Servings{' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.servings?.message}
+            </span>
+          </label>
+          <input
+            className='block h-10 w-full rounded border px-3 text-xl'
+            type='text'
+            {...register('servings')}
+          />
+
+          <label className='mt-4 block text-lg font-semibold' htmlFor='prep'>
+            Prep Time (minutes){' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.prepTime?.message}
+            </span>
+          </label>
+          <input
+            className='block h-10 w-full rounded border px-3 text-xl'
+            type='text'
+            {...register('prepTime')}
+          />
+
+          <label className='mt-4 block text-lg font-semibold' htmlFor='cook'>
+            Cook Time (minutes){' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.cookTime?.message}
+            </span>
+          </label>
+          <input
+            className='block h-10 w-full rounded border px-3 text-xl'
+            type='text'
+            {...register('cookTime')}
+          />
+
           <label
             className='mt-4 block text-lg font-semibold'
             htmlFor='description'
           >
-            Description
+            Description{' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.description?.message}
+            </span>
           </label>
           <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            {...register('description')}
             className='block h-36 w-full rounded border px-3 text-xl'
           />
           <button
-            className='mb-8 block w-full border-2 py-2'
-            type='button'
-            onClick={() =>
-              updateRecipe(
-                recipeId,
-                name,
-                ingredients,
-                directions,
-                imageUrl,
-                tags,
-                description,
-                amounts,
-                measurements
-              )
-            }
+            type='submit'
+            className='mb-8 block w-full border-2 py-2 disabled:border-blue-500'
+            disabled={uploadLoading}
           >
-            Update
+            Create
           </button>
+
           <button
-            className='block w-full border-2 border-red-600 py-2'
-            type='button'
-            onClick={() => deleteRecipe(recipeId, router)}
+            type='submit'
+            className='bg-primary-dark px-4 py-2 text-lighter-light'
           >
-            Delete
+            TEST ZOD
           </button>
         </form>
       </div>

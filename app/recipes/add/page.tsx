@@ -1,33 +1,67 @@
 'use client';
+import Image from 'next/image';
 
 import React, { useState, useEffect } from 'react';
-import {
-  createRecipeDoc,
-  uploadImages,
-  deleteRecipe,
-  editImages,
-  handleDirectionsChange,
-  updateRecipe,
-  addDirection,
-  handleIngredientsChange,
-  addIngredient,
-  handleMeasurementsChange,
-  handleAmountsChange,
-} from '@/app/utils/documentFunctions';
+import { createRecipeDoc, uploadImages } from '@/app/utils/documentFunctions';
+
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { recipeSchema } from '@/app/models/schema';
+import type { RecipeSchema } from '@/app/models/schema';
 
 export default function AddRecipe() {
-  const [name, setName] = useState<string>('');
-  const [directions, setDirections] = useState<string[]>(['']);
-  const [ingredients, setIngredients] = useState<string[]>([]);
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    control,
+    formState: { errors, isValid },
+  } = useForm<RecipeSchema>({ resolver: zodResolver(recipeSchema) });
+
+  const {
+    fields: ingredientFields,
+    append: ingredientAppend,
+    prepend: ingredientPrepend,
+    remove: ingredientRemove,
+    swap: ingredientSwap,
+    move: ingredientMove,
+  } = useFieldArray({
+    control,
+    name: 'ingredients',
+  });
+
+  const { fields: directionsFields, append: directionsAppend } = useFieldArray({
+    control,
+    name: 'directions',
+  });
+
+  const onSubmit: SubmitHandler<RecipeSchema> = (data) => {
+    console.log('submit data?', data);
+    createRecipeDoc(
+      imageUrl,
+      setImageUrl,
+      setAddDocLoading,
+      setAddDocError,
+      data
+    );
+  };
+
   const [imageUrl, setImageUrl] = useState<string>('');
   const [image, setImage] = useState<null | File>(null);
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
   const [addDocLoading, setAddDocLoading] = useState<boolean>(false);
   const [addDocError, setAddDocError] = useState<string>('');
-  const [tags, setTags] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [measurements, setMeasurements] = useState<string[]>([]);
-  const [amounts, setAmounts] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (ingredientFields.length === 0)
+      ingredientAppend({ name: '', amount: 0, measurement: '' });
+    if (directionsFields.length === 0) directionsAppend({ direction: '' });
+  }, [
+    directionsAppend,
+    ingredientAppend,
+    ingredientFields.length,
+    directionsFields.length,
+  ]);
 
   useEffect(() => {
     image && uploadImages(image, setImageUrl, setUploadLoading);
@@ -35,22 +69,43 @@ export default function AddRecipe() {
   }, [image]);
 
   return (
-    <div className='flex h-screen items-center justify-center'>
-      <div>
-        {addDocError && <h2>{addDocError}</h2>}
-        {addDocLoading && <h1 className='text-5xl'>LOADING...</h1>}
-        <h1>Add a new recipe</h1>
-        <form className='text-red-600'>
-          <label htmlFor='name'>Name</label>
+    <div className='mx-4'>
+      <div className='flex justify-center'>
+        {imageUrl && (
+          <button
+            onClick={() => setImageUrl('')}
+            className='mx-auto hover:bg-red-300'
+          >
+            <Image
+              src={imageUrl}
+              alt='Recipe Photo'
+              height={300}
+              width={300}
+              priority={true}
+              className='overflow-hidden rounded-xl hover:opacity-30'
+            />
+          </button>
+        )}
+      </div>
+
+      <div className='mx-auto mt-8 max-w-md'>
+        <form onSubmit={handleSubmit(onSubmit)} className='text-primary-dark'>
+          <label className='mt-4 block text-lg font-semibold' htmlFor='name'>
+            Name{' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.name?.message}
+            </span>
+          </label>
           <input
-            className='block'
+            {...register('name')}
+            className='block h-10 w-full rounded border px-3 text-xl'
             type='text'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
           />
-          <label htmlFor='images'>Upload pics</label>
+          <label className='mt-4 block text-lg font-semibold' htmlFor='images'>
+            Upload photo
+          </label>
           <input
-            className='block'
+            className='w-full'
             type='file'
             name='images'
             id='images'
@@ -59,6 +114,7 @@ export default function AddRecipe() {
               setImage(e.target.files ? e.target.files[0] : null)
             }
           />
+
           {/* Ingredients Section */}
           <div className='mt-6'>
             <div className='mt-1 flex items-center gap-5'>
@@ -66,112 +122,132 @@ export default function AddRecipe() {
               <button
                 className=''
                 type='button'
-                onClick={() => addIngredient(setIngredients)}
+                onClick={() =>
+                  ingredientAppend({ name: '', measurement: '', amount: 0 })
+                }
               >
                 Add
               </button>
             </div>
-            {ingredients.map((ingredient, idx) => (
-              <div className='flex gap-3' key={idx}>
+            {ingredientFields.map((field, idx) => (
+              <div className='flex gap-3' key={field.id}>
                 <input
-                  type='text'
-                  value={ingredient}
-                  onChange={(e) =>
-                    handleIngredientsChange(e, idx, ingredients, setIngredients)
-                  }
-                  placeholder={`${idx + 1}.) ingredient`}
+                  placeholder={`ingredient`}
                   className='h-10 w-full rounded border px-3 text-xl'
+                  {...register(`ingredients.${idx}.name`)}
                 />
                 <input
-                  type='text'
-                  value={measurements[idx]}
-                  onChange={(e) =>
-                    handleMeasurementsChange(
-                      e,
-                      idx,
-                      measurements,
-                      setMeasurements
-                    )
-                  }
-                  placeholder={`${idx + 1}.) Unit`}
+                  placeholder={`measurement`}
                   className='h-10 w-full rounded border px-3 text-xl'
+                  {...register(`ingredients.${idx}.measurement`)}
                 />
                 <input
-                  type='number'
-                  value={amounts[idx]}
-                  onChange={(e) =>
-                    handleAmountsChange(e, idx, amounts, setAmounts)
-                  }
-                  placeholder={`${idx + 1}.) Amount`}
+                  placeholder={`amount`}
                   className='h-10 w-full rounded border px-3 text-xl'
+                  {...register(`ingredients.${idx}.amount`)}
                 />
               </div>
             ))}
-          </div>
-          <label className='block' htmlFor='description'>
-            Description
-          </label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          {directions.map((direction, idx) => (
-            <div key={idx}>
-              <h1>Directions</h1>
-              <input
-                type='text'
-                value={direction}
-                onChange={(e) =>
-                  handleDirectionsChange(e, idx, directions, setDirections)
-                }
-                placeholder={`${idx}.) Direction`}
-              />
+
+            {/* Direction section */}
+            <div className='mt-6'>
+              <div className='mt-1 flex items-center gap-5'>
+                <h1 className='block text-lg font-semibold'>Directions</h1>
+                <button
+                  className=''
+                  type='button'
+                  onClick={() => directionsAppend({ direction: '' })}
+                >
+                  Add
+                </button>
+              </div>
+              {directionsFields.map((field, idx) => (
+                <div className='flex gap-3' key={field.id}>
+                  <input
+                    placeholder={`${idx + 1}.) Direction`}
+                    className='h-10 w-full rounded border px-3 text-xl'
+                    {...register(`directions.${idx}.direction`)}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-          <label className='block' htmlFor='tags'>
-            Tags (separated by comma)
+          </div>
+          <label className='mt-4 block text-lg font-semibold' htmlFor='tags'>
+            Tags (separated by comma){' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.name?.message}
+            </span>
           </label>
           <input
             type='text'
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
+            className='block h-10 w-full rounded border px-3 text-xl'
+            {...register('tags')}
           />
+          {errors.servings?.message && <p>{errors.servings.message}</p>}
+          <label className='block text-lg font-semibold' htmlFor='servings'>
+            Servings{' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.servings?.message}
+            </span>
+          </label>
+          <input
+            className='block h-10 w-full rounded border px-3 text-xl'
+            type='text'
+            {...register('servings')}
+          />
+
+          <label className='mt-4 block text-lg font-semibold' htmlFor='prep'>
+            Prep Time (minutes){' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.prepTime?.message}
+            </span>
+          </label>
+          <input
+            className='block h-10 w-full rounded border px-3 text-xl'
+            type='text'
+            {...register('prepTime')}
+          />
+
+          <label className='mt-4 block text-lg font-semibold' htmlFor='cook'>
+            Cook Time (minutes){' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.cookTime?.message}
+            </span>
+          </label>
+          <input
+            className='block h-10 w-full rounded border px-3 text-xl'
+            type='text'
+            {...register('cookTime')}
+          />
+
+          <label
+            className='mt-4 block text-lg font-semibold'
+            htmlFor='description'
+          >
+            Description{' '}
+            <span className='text-sm font-light text-red-400'>
+              {errors.description?.message}
+            </span>
+          </label>
+          <textarea
+            {...register('description')}
+            className='block h-36 w-full rounded border px-3 text-xl'
+          />
+          <button
+            type='submit'
+            className='mb-8 block w-full border-2 py-2 disabled:border-blue-500'
+            disabled={uploadLoading}
+          >
+            Create
+          </button>
+
+          <button
+            type='submit'
+            className='bg-primary-dark px-4 py-2 text-lighter-light'
+          >
+            TEST ZOD
+          </button>
         </form>
-        <button
-          onClick={() => addDirection(setDirections)}
-          className='border-2 border-green-500 p-10'
-        >
-          Add Direction
-        </button>
-        <button
-          type='button'
-          className='block border-2 p-10 disabled:border-blue-600'
-          disabled={uploadLoading}
-          onClick={() =>
-            createRecipeDoc(
-              imageUrl,
-              ingredients,
-              directions,
-              name,
-              setName,
-              setDirections,
-              setIngredients,
-              setImageUrl,
-              setAddDocLoading,
-              setAddDocError,
-              description,
-              tags,
-              setTags,
-              setDescription,
-              amounts,
-              setAmounts,
-              measurements,
-              setMeasurements
-            )
-          }
-        >
-          UPLOAD RECIPE
-        </button>
       </div>
     </div>
   );
