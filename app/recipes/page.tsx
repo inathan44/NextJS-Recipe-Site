@@ -13,7 +13,16 @@ export default async function Recipes() {
   return (
     <>
       <FilterSortBar />
-      <div className='mx-auto my-4 grid max-w-7xl grid-cols-1 justify-center gap-y-8 md:grid-cols-2 lg:grid-cols-3'>
+      <div className='my-4 grid max-w-7xl grid-cols-1 place-items-center justify-center gap-y-8 px-4 md:grid-cols-2 lg:grid-cols-3'>
+        {recipes?.map((recipe) => {
+          return <RecipeCard recipe={recipe} key={recipe.id} />;
+        })}
+        {recipes?.map((recipe) => {
+          return <RecipeCard recipe={recipe} key={recipe.id} />;
+        })}
+        {recipes?.map((recipe) => {
+          return <RecipeCard recipe={recipe} key={recipe.id} />;
+        })}
         {recipes?.map((recipe) => {
           return <RecipeCard recipe={recipe} key={recipe.id} />;
         })}
