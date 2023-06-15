@@ -16,12 +16,14 @@ export default function RecipeInfo({ recipe }: InfoProps) {
 
   return (
     <>
-      <PrepInfo
-        cookTime={recipe?.cookTime}
-        prepTime={recipe?.prepTime}
-        setNumOfServings={setNumOfServings}
-        servings={numOfServings}
-      />
+      <div className='md:hidden'>
+        <PrepInfo
+          cookTime={recipe?.cookTime}
+          prepTime={recipe?.prepTime}
+          setNumOfServings={setNumOfServings}
+          servings={numOfServings}
+        />
+      </div>
       <RecipeSection name='Ingredients' color='#43484C'>
         <ol className='flex list-disc flex-col gap-2 overflow-hidden pl-4'>
           {recipe?.ingredients?.map((item, idx) => (

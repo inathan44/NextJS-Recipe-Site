@@ -27,12 +27,15 @@ export default function RecipeSection(props: SectionProps) {
           // background: `linear-gradient(to bottom, ${props.color}, #262B2C)`,
         }}
       >
-        <div className='flex items-start justify-between'>
-          <p className='mb-2 text-xl font-bold'>{props.name}</p>
-          <button className='' onClick={toggleExpand}>
-            <ChevronIcon />
-          </button>
-        </div>
+        <button
+          onClick={toggleExpand}
+          className='flex w-full grow items-start justify-between'
+        >
+          <p className='mb-2 grow text-left text-xl font-bold'>{props.name}</p>
+          {/* <button className='' onClick={toggleExpand}> */}
+          <ChevronIcon />
+          {/* </button> */}
+        </button>
         <div
           className='grid overflow-hidden px-4 font-light transition-all'
           style={{ gridTemplateRows: expand ? '1fr' : '0fr' }}

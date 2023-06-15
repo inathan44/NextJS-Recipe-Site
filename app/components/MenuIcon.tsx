@@ -7,7 +7,7 @@ const MenuIcon = () => {
         viewBox='0 0 24 24'
         strokeWidth={1.5}
         stroke='currentColor'
-        className='h-7 w-7'
+        className='h-7 w-7 dark:stroke-primary-light'
       >
         <path
           strokeLinecap='round'

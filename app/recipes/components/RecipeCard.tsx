@@ -17,15 +17,18 @@ export default function RecipeCard(props: RecipeCardProps) {
             <Image
               src={recipe.image}
               alt={`Photo of ${recipe.name}`}
-              width={1000}
-              height={1000}
               className='w-full'
+              // fill
+              width={1920}
+              height={1080}
+              style={{ objectFit: 'contain' }}
             />
             <div className='absolute inset-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent' />
             <div className='absolute bottom-0 px-4 pb-2 text-white'>
-              <h2 className=' text-2xl font-semibold'>
+              <h2 className='text-2xl font-semibold'>
                 {startCase(recipe.name)}
               </h2>
+              <p className='h-6 overflow-hidden'>{recipe.description}</p>
               <div className='flex gap-1'>
                 {recipe.tags.map((tag, idx) => (
                   <p
