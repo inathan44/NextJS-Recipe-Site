@@ -12,7 +12,7 @@ export default async function Recipes({
 }) {
   const searchQuery = searchParams.search ?? '';
 
-  const recipesData: Promise<Recipe[] | undefined> = getAllRecipes(searchQuery);
+  const recipesData: Promise<Recipe[]> = getAllRecipes(searchQuery);
 
   const recipes = await recipesData;
 
