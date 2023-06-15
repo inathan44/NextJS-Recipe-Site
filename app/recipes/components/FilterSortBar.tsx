@@ -19,9 +19,7 @@ const FilterSortBar = () => {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-  }
+  function handleSubmit(e: FormEvent) {}
 
   const handleSearchParams = useCallback(
     (debouncedValue: string) => {
@@ -71,9 +69,10 @@ const FilterSortBar = () => {
     <div className='mx-6 mt-12 border-darker-dark'>
       <div className='flex items-center gap-4 border-b border-darker-dark pb-2'>
         <SearchIcon />
-        <form className='w-full'>
+        <form onSubmit={handleSubmit} className='w-full'>
           <input
             type='text'
+            name='search'
             className='w-full bg-transparent active:border-transparent'
             placeholder='Search Recipes'
             value={inputValue}

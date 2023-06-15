@@ -38,7 +38,6 @@ export default function AddRecipe() {
   });
 
   const onSubmit: SubmitHandler<RecipeSchema> = (data) => {
-    console.log('submit data?', data);
     toast.promise(
       createRecipeDoc(
         imageUrl,
@@ -177,7 +176,7 @@ export default function AddRecipe() {
           <label className='mt-4 block text-lg font-semibold' htmlFor='tags'>
             Tags (separated by comma){' '}
             <span className='text-sm font-light text-red-400'>
-              {errors.name?.message}
+              {errors.tags?.message}
             </span>
           </label>
           <input

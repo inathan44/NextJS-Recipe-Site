@@ -8,7 +8,7 @@ export default async function getAllRecipes(searchTerm: string) {
     const recipes: Recipe[] = [];
 
     snapshot.docs.forEach((doc) => {
-      if (doc.data().name.includes(searchTerm.toLowerCase())) {
+      if (doc.data().name.includes(searchTerm)) {
         recipes.push({
           id: doc.id,
           name: '',
