@@ -51,8 +51,14 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
   );
 }
 
-export async function generateStaticParams() {
-  const recipesData: any = getAllRecipes();
+export async function generateStaticParams({
+  searchParams,
+}: {
+  searchParams: { search?: string };
+}) {
+  const searchQuery = searchParams.search ?? '';
+
+  const recipesData: any = getAllRecipes(searchQuery);
   const recipes = await recipesData;
 
   if (recipes)
