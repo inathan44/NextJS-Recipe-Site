@@ -26,67 +26,81 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
   return (
     <>
       <div className=''>
-        <div className='mx-3'>
-          <div className='mb-5 flex items-center justify-between'>
+        <div className='mx-auto max-w-5xl'>
+          <div className='mx-3 mb-5 flex items-center justify-between'>
             <div className='rounded-full bg-darker-light p-1'>
               <LeftArrowIcon />
             </div>
-            <p className='font-semibold  md:hidden'>Recipe</p>
+            <p className='font-semibold dark:text-primary-light md:hidden'>
+              Recipe
+            </p>
             <Link
-              className='rounded-full px-3 py-1 transition-all hover:bg-primary-dark hover:text-primary-light'
+              className='rounded-full px-3 py-1 transition-all hover:bg-primary-dark hover:text-primary-light dark:bg-primary-light dark:text-primary-dark dark:hover:bg-darker-light dark:hover:text-primary-dark'
               href={`recipes/${recipe?.id}/edit`}
             >
               Edit
             </Link>
           </div>
-          <h1 className='mb-3 text-3xl md:hidden'>{startCase(recipe?.name)}</h1>
-          <div className='h-84 flex md:mb-4'>
-            <div className='relative mx-auto max-w-lg md:mx-0 md:w-2/5'>
-              {recipe && (
-                <Image
-                  src={recipe.image}
-                  // fill
-                  width={1920}
-                  height={1080}
-                  alt='Recipe photos'
-                  className='w-full max-w-md rounded-2xl object-contain'
-                />
-              )}
-            </div>
+        </div>
 
-            <div className='mx-6 hidden w-3/5 flex-col gap-4 pl-8 md:flex'>
-              <h1 className='text-5xl font-bold'>{startCase(recipe?.name)}</h1>
-
-              <div className='flex items-center gap-3'>
-                {recipe?.tags?.map((tag, idx) => (
-                  <DesktopRecipeTag tag={tag} key={idx} />
-                ))}
-                <PrinterIcon />
+        <div className='mx-auto max-w-5xl'>
+          <div className='mx-3'>
+            <h1 className='mb-3 text-3xl dark:text-primary-light md:hidden'>
+              {startCase(recipe?.name)}
+            </h1>
+            <div className='h-84 flex justify-center md:mb-4'>
+              <div className='relative mx-auto max-w-lg md:mx-0 md:w-full'>
+                {recipe && (
+                  <Image
+                    src={recipe.image}
+                    // fill
+                    width={1920}
+                    height={1080}
+                    alt='Recipe photos'
+                    className='w-full max-w-md rounded-2xl object-contain'
+                  />
+                )}
               </div>
 
-              <div className='flex gap-4 text-sm'>
-                <PrepItem
-                  text='Total'
-                  number={(recipe?.cookTime || 0) + (recipe?.prepTime || 0)}
-                >
-                  m
-                </PrepItem>
-                <PrepItem text='Cook' number={recipe?.cookTime || 'N/A'}>
-                  m
-                </PrepItem>
-                <PrepItem text='Prep' number={recipe?.prepTime || 'N/A'}>
-                  m
-                </PrepItem>
-                <PrepItem text='Servings' number={recipe?.servings || 'N/A'} />
-              </div>
+              <div className='mx-6 hidden w-full flex-col gap-4 pl-8 md:flex'>
+                <h1 className='text-5xl font-bold dark:text-primary-light'>
+                  {startCase(recipe?.name)}
+                </h1>
 
-              <p>{recipe?.description}</p>
+                <div className='flex items-center gap-3'>
+                  {recipe?.tags?.map((tag, idx) => (
+                    <DesktopRecipeTag tag={tag} key={idx} />
+                  ))}
+                  <PrinterIcon />
+                </div>
+
+                <div className='flex gap-4 text-sm'>
+                  <PrepItem
+                    text='Total'
+                    number={(recipe?.cookTime || 0) + (recipe?.prepTime || 0)}
+                  >
+                    m
+                  </PrepItem>
+                  <PrepItem text='Cook' number={recipe?.cookTime || 'N/A'}>
+                    m
+                  </PrepItem>
+                  <PrepItem text='Prep' number={recipe?.prepTime || 'N/A'}>
+                    m
+                  </PrepItem>
+                  <PrepItem
+                    text='Servings'
+                    number={recipe?.servings || 'N/A'}
+                  />
+                </div>
+
+                <p className='dark:text-primary-light'>{recipe?.description}</p>
+              </div>
             </div>
+
+            <p className='my-4 text-sm text-slate-800 dark:text-primary-light md:hidden'>
+              {recipe?.description}
+            </p>
           </div>
-
-          <p className='my-4 text-sm text-slate-800 md:hidden'>
-            {recipe?.description}
-          </p>
         </div>
       </div>
       {recipe && <RecipeInfo recipe={recipe} />}

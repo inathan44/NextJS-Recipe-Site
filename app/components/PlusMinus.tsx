@@ -32,7 +32,7 @@ export default function PlusMinus({
           <path strokeLinecap='round' strokeLinejoin='round' d='M18 12H6' />
         </svg>
       </button>
-      <p>{numOfServings || 'N/A'}</p>
+      <p className='dark:text-primary-light'>{numOfServings || 'N/A'}</p>
       <button
         className='rounded-full bg-primary-dark'
         onClick={() =>

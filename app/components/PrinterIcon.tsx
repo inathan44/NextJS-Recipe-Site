@@ -1,13 +1,13 @@
 export default function PrinterIcon() {
   return (
-    <button className='rounded-full border border-darker-light p-2 text-sm brightness-[85%] transition-all'>
+    <button className='rounded-full border border-darker-light p-2 text-sm brightness-[85%] transition-all dark:brightness-100 dark:hover:bg-primary-light'>
       <svg
         xmlns='http://www.w3.org/2000/svg'
         fill='none'
         viewBox='0 0 24 24'
         strokeWidth={1.5}
         stroke='currentColor'
-        className='h-6 w-6 transition-all hover:stroke-slate-700'
+        className='h-6 w-6 transition-all hover:stroke-slate-700 dark:stroke-primary-light dark:hover:stroke-primary-dark'
       >
         <path
           strokeLinecap='round'

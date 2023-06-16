@@ -6,7 +6,7 @@ type Props = {
 
 export default function PrepItem({ text, number, children }: Props) {
   return (
-    <p className=''>
+    <p className='dark:text-primary-light'>
       {text}{' '}
       <span className='font-bold'>
         {number}
