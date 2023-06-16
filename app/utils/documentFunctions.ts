@@ -98,6 +98,8 @@ export async function updateRecipe(
   data: RecipeSchema,
   recipeId: string
 ) {
+  setAddDocLoading(true);
+
   const recipeRef = doc(db, 'recipes', recipeId);
 
   // Checking type validity
@@ -115,8 +117,10 @@ export async function updateRecipe(
 
   try {
     await updateDoc(recipeRef, recipeToAdd);
+    setAddDocLoading(false);
   } catch (e) {
     console.log(e);
+    setAddDocLoading(false);
   }
 }
 
