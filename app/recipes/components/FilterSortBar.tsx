@@ -1,6 +1,7 @@
 'use client';
 
-import router, { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import SearchIcon from '@/app/components/SearchIcon';
 import FiltersIcon from '@/app/components/FiltersIcon';
 import {
@@ -67,13 +68,13 @@ const FilterSortBar = () => {
 
   return (
     <div className='mx-6 mt-12 border-darker-dark'>
-      <div className='flex items-center gap-4 border-b border-darker-dark pb-2'>
+      <div className='flex items-center gap-4 border-b border-darker-dark pb-2 dark:border-primary-light'>
         <SearchIcon />
         <form onSubmit={handleSubmit} className='w-full'>
           <input
             type='text'
             name='search'
-            className='w-full bg-transparent active:border-transparent'
+            className='w-full bg-transparent active:border-transparent dark:text-primary-light'
             placeholder='Search Recipes'
             value={inputValue}
             onChange={(e) => {
@@ -82,6 +83,14 @@ const FilterSortBar = () => {
           />
         </form>
         <FiltersIcon />
+      </div>
+      <div className='w-full text-right'>
+        <Link
+          href={'/recipes/add'}
+          className=' mt-2 inline-block rounded-full px-3 py-1 text-right dark:bg-primary-light dark:text-primary-dark'
+        >
+          Add a Recipe
+        </Link>
       </div>
     </div>
   );
