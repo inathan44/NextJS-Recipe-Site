@@ -5,7 +5,6 @@ type Params = {
   params: {
     recipeId: string;
   };
-  type: 'add' | 'edit';
 };
 
 export default function page({ params: { recipeId } }: Params) {

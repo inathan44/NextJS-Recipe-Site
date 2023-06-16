@@ -54,7 +54,7 @@ const FilterSortBar = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedValue(inputValue);
-    }, 500);
+    }, 1000);
 
     return () => {
       clearTimeout(timer);
