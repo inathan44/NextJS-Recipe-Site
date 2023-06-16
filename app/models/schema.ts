@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { ZodSchema, z } from 'zod';
 
 const ingredientSchema = z
   .string({ invalid_type_error: 'must be a string' })
@@ -92,4 +92,43 @@ export const recipeSchema = z.object({
     .optional(),
 });
 
+type SignUpData = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
+export const signUpSchema: ZodSchema<SignUpData> = z
+  .object({
+    email: z
+      .string()
+      .email('Invalid email format')
+      .nonempty('Email is required'),
+    password: z
+      .string()
+      .min(6, 'Password must be at least 6 characters')
+      .nonempty('Password is required'),
+    confirmPassword: z
+      .string()
+      .min(6, 'Password must be at least 6 characters')
+      .nonempty('Password is required'),
+  })
+  .superRefine(({ password, confirmPassword }, ctx) => {
+    if (password !== confirmPassword) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'The passwords did not match',
+      });
+    }
+  });
+
+export const loginSchema = z.object({
+  email: z.string().email('Invalid email format').nonempty('Email is required'),
+  password: z.string().nonempty('Password is required'),
+});
+
 export type RecipeSchema = z.infer<typeof recipeSchema>;
+
+export type SignUpSchema = z.infer<typeof signUpSchema>;
+
+export type LoginSchema = z.infer<typeof loginSchema>;
