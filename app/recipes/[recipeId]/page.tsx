@@ -1,7 +1,5 @@
 import LeftArrowIcon from '@/app/components/LeftArrowIcon';
-import PrepInfo from '@/app/components/PrepInfo';
 import RecipeInfo from '@/app/components/RecipeInfo';
-import RecipeSection from '@/app/components/RecipeSection';
 import getAllRecipes from '@/lib/getAllRecipes';
 import getRecipe from '@/lib/getRecipe';
 import Image from 'next/image';
