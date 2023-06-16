@@ -49,32 +49,47 @@ export const recipeSchema = z.object({
     .string()
     .refine(
       (value) => {
-        const numericValue = parseFloat(value);
-        return !isNaN(numericValue) && numericValue >= 0;
-      },
-      { message: 'Must be a number above 0' }
-    )
-    .transform((value) => parseFloat(value)),
-  prepTime: z
-    .string()
-    .refine(
-      (value) => {
-        const numericValue = parseFloat(value);
-        return !isNaN(numericValue) && numericValue >= 0;
-      },
-      { message: 'Must be a number above 0' }
-    )
-    .transform((value) => parseFloat(value)),
-  servings: z
-    .string()
-    .refine(
-      (value) => {
+        if (value === '') return true;
         const numericValue = parseFloat(value);
         return !isNaN(numericValue) && numericValue >= 0;
       },
       { message: 'Must be a number above 0', path: [] }
     )
-    .transform((value) => parseFloat(value)),
+    .transform((value) => {
+      if (value === '') return undefined;
+      return parseFloat(value);
+    })
+    .optional(),
+  prepTime: z
+    .string()
+    .refine(
+      (value) => {
+        if (value === '') return true;
+        const numericValue = parseFloat(value);
+        return !isNaN(numericValue) && numericValue >= 0;
+      },
+      { message: 'Must be a number above 0', path: [] }
+    )
+    .transform((value) => {
+      if (value === '') return undefined;
+      return parseFloat(value);
+    })
+    .optional(),
+  servings: z
+    .string()
+    .refine(
+      (value) => {
+        if (value === '') return true;
+        const numericValue = parseFloat(value);
+        return !isNaN(numericValue) && numericValue >= 0;
+      },
+      { message: 'Must be a number above 0', path: [] }
+    )
+    .transform((value) => {
+      if (value === '') return undefined;
+      return parseFloat(value);
+    })
+    .optional(),
 });
 
 export type RecipeSchema = z.infer<typeof recipeSchema>;
