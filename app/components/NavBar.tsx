@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import MobileNav from './MobileNav';
+import SignOutButton from './SignOutButton';
 
 export default function NavBar() {
   return (
@@ -12,13 +13,14 @@ export default function NavBar() {
             <span className='text-slate-700 dark:text-lighter-light'>PL8.</span>
           </h1>
         </Link>
-        <div>
+        <div className='flex gap-8'>
           <Link
             className='hidden border-darker-dark text-xl font-bold hover:border-b-2 dark:text-primary-light md:block'
             href={'recipes'}
           >
             Recipes
           </Link>
+          <SignOutButton />
         </div>
         <MobileNav />
       </nav>

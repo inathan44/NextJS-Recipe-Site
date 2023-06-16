@@ -20,12 +20,14 @@ export default function MobileNav() {
         <MenuIcon />
       </button>
       <nav
+        onClick={() => setShowDropdown(false)}
         className={`fixed left-0 top-0 z-50 mt-16 h-screen w-full  md:hidden ${
           showDropdown ? 'bg-black/50' : 'invisible'
         }`}
       >
         <ul
-          className={`flex items-center justify-center gap-12 overflow-hidden bg-primary-light font-semibold transition-all ${
+          onClick={() => setShowDropdown(false)}
+          className={`flex items-center justify-center gap-12 overflow-hidden bg-primary-light font-semibold transition-all dark:bg-primary-dark dark:text-primary-light ${
             showDropdown ? 'h-16' : 'h-0'
           }`}
         >
