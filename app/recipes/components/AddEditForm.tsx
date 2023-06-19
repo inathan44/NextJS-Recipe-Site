@@ -17,6 +17,8 @@ import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import PlusIcon from '@/app/components/PlusIcon';
 import XIcon from '@/app/components/XIcon';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/firebaseConfig';
 
 type Params = {
   recipeId?: string;
@@ -31,6 +33,8 @@ export default function AddEditForm({ recipeId, type }: Params) {
   const [addDocLoading, setAddDocLoading] = useState<boolean>(false);
   const [addDocError, setAddDocError] = useState<string>('');
   const [deleteBuffer, setDeleteBuffer] = useState<boolean>(true);
+
+  const [user] = useAuthState(auth);
 
   const {
     register,
@@ -137,6 +141,8 @@ export default function AddEditForm({ recipeId, type }: Params) {
   }, [image]);
 
   const onSubmit: SubmitHandler<RecipeSchema> = (data) => {
+    if (!user?.email) return toast.error('Must be signed in to add recipe');
+
     if (recipeId && type === 'edit') {
       toast.promise(
         updateRecipe(
@@ -144,7 +150,8 @@ export default function AddEditForm({ recipeId, type }: Params) {
           setAddDocLoading,
           setAddDocError,
           data,
-          recipeId
+          recipeId,
+          user?.uid!
         ),
         {
           loading: 'Updating Recipe',
@@ -161,7 +168,8 @@ export default function AddEditForm({ recipeId, type }: Params) {
           setAddDocLoading,
           setAddDocError,
           data,
-          reset
+          reset,
+          user?.uid!
         ),
         {
           loading: 'Adding Recipe...',
