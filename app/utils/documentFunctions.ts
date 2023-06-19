@@ -11,7 +11,8 @@ export async function createRecipeDoc(
   setAddDocLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setAddDocError: React.Dispatch<React.SetStateAction<string>>,
   data: RecipeSchema,
-  reset: any
+  reset: any,
+  owner: string
 ) {
   setAddDocLoading(true);
 
@@ -26,6 +27,7 @@ export async function createRecipeDoc(
     cookTime: data.cookTime,
     prepTime: data.prepTime,
     servings: data.servings,
+    owner,
   };
 
   try {
@@ -39,7 +41,8 @@ export async function createRecipeDoc(
 
     reset();
   } catch (e) {
-    console.log(e);
+    console.log('<><><><><>', e);
+    throw new Error('This no worky');
   }
 }
 

@@ -9,7 +9,7 @@ type Recipe = {
   cookTime?: number;
   prepTime?: number;
   servings?: number;
-  owner: string;
+  owner?: string;
 };
 
 type Ingredient = {

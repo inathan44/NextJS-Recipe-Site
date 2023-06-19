@@ -150,8 +150,7 @@ export default function AddEditForm({ recipeId, type }: Params) {
           setAddDocLoading,
           setAddDocError,
           data,
-          recipeId,
-          user?.uid!
+          recipeId
         ),
         {
           loading: 'Updating Recipe',
