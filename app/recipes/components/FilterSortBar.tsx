@@ -11,6 +11,8 @@ import {
   useState,
   useEffect,
 } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/firebaseConfig';
 
 const FilterSortBar = () => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -19,6 +21,7 @@ const FilterSortBar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+  const [user] = useAuthState(auth);
 
   function handleSubmit(e: FormEvent) {}
 
@@ -84,14 +87,16 @@ const FilterSortBar = () => {
         </form>
         <FiltersIcon />
       </div>
-      <div className='w-full text-right'>
-        <Link
-          href={'/recipes/add'}
-          className=' mt-2 inline-block rounded-full px-3 py-1 text-right dark:bg-primary-light dark:text-primary-dark'
-        >
-          Add a Recipe
-        </Link>
-      </div>
+      {user?.email && (
+        <div className='w-full text-right'>
+          <Link
+            href={'/recipes/add'}
+            className=' mt-2 inline-block rounded-full px-3 py-1 text-right dark:bg-primary-light dark:text-primary-dark'
+          >
+            Add a Recipe
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

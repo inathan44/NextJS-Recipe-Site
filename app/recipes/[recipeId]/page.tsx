@@ -8,6 +8,9 @@ import { startCase } from 'lodash';
 import PrinterIcon from '@/app/components/PrinterIcon';
 import DesktopRecipeTag from '@/app/components/DesktopRecipeTag';
 import PrepItem from '@/app/components/PrepItem';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/firebaseConfig';
+import EditRecipeLink from '@/app/components/EditRecipeLink';
 // import LeftArrowIcon from '@/app/components/leftArrowIcon';
 
 type Params = {
@@ -38,6 +41,7 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
             >
               Edit
             </Link>
+            <EditRecipeLink recipe={recipe} />
           </div>
         </div>
 

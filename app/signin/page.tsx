@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   useSignInWithEmailAndPassword,
   useAuthState,
+  useSignInWithGoogle,
 } from 'react-firebase-hooks/auth';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,9 +12,10 @@ import { auth } from '@/firebaseConfig';
 import { loginSchema, LoginSchema } from '../models/schema';
 import { FIREBASE_ERRORS } from '@/lib/firebaseErrors';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function SignUp() {
-  const [user, authLoading, error] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const router = useRouter();
 
   const {
@@ -25,6 +27,8 @@ export default function SignUp() {
 
   const [signInWithUserAndPassword, _, loading, authError] =
     useSignInWithEmailAndPassword(auth);
+
+  const [signInWithGoogle] = useSignInWithGoogle(auth);
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     // Valid form inputs
@@ -70,6 +74,20 @@ export default function SignUp() {
             Login
           </button>
         </form>
+        <button
+          onClick={() => signInWithGoogle()}
+          className='mx-auto mt-4 flex w-full max-w-sm justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow'
+        >
+          <Image
+            className='h-6 w-6'
+            src='https://www.svgrepo.com/show/475656/google-color.svg'
+            loading='lazy'
+            alt='google logo'
+            width={800}
+            height={800}
+          />
+          <span>Login with Google</span>
+        </button>
       </div>
     </div>
   );

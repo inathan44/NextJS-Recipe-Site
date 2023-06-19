@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import RecipeSection from './RecipeSection';
 import PrepInfo from './PrepInfo';
+import React from 'react';
 
 type InfoProps = {
   recipe: Recipe;
@@ -25,22 +26,32 @@ export default function RecipeInfo({ recipe }: InfoProps) {
         />
       </div>
       <RecipeSection name='Ingredients' color='#43484C'>
-        <ol className='flex list-disc flex-col gap-2 overflow-hidden pl-4'>
+        <ol className='flex flex-col gap-3 overflow-hidden'>
           {recipe?.ingredients?.map((item, idx) => (
-            <li key={idx}>
-              {item.name}:{' '}
-              {recipe.servings && numOfServings
-                ? (numOfServings / recipe.servings) * item.amount
-                : item.amount}{' '}
-              {item.measurement}(s)
-            </li>
+            <React.Fragment key={idx}>
+              <div className='flex items-center gap-4'>
+                <input type='checkbox' />
+                <li className=''>
+                  {item.name}:{' '}
+                  {recipe.servings && numOfServings
+                    ? (numOfServings / recipe.servings) * item.amount
+                    : item.amount}{' '}
+                  {item.measurement}(s)
+                </li>
+              </div>
+            </React.Fragment>
           ))}
         </ol>
       </RecipeSection>
       <RecipeSection name='Directions' bgColor='#43484C' color='#303436'>
-        <ol className='flex list-decimal flex-col gap-2 overflow-hidden pl-4'>
+        <ol className='flex flex-col gap-2 overflow-hidden'>
           {recipe?.directions?.map((item, idx) => (
-            <li key={idx}>{item}</li>
+            <React.Fragment key={idx}>
+              <div className='flex items-center gap-4'>
+                <input type='checkbox' />
+                <li>{item}</li>
+              </div>
+            </React.Fragment>
           ))}
         </ol>
       </RecipeSection>

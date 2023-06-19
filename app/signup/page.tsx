@@ -1,12 +1,18 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import {
+  useCreateUserWithEmailAndPassword,
+  useSignInWithGoogle,
+  useAuthState,
+} from 'react-firebase-hooks/auth';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import InputField from './components/InputField';
 import { auth } from '@/firebaseConfig';
 import { SignUpSchema, signUpSchema } from '../models/schema';
 import { FIREBASE_ERRORS } from '@/lib/firebaseErrors';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function SignUp() {
   const {
@@ -20,8 +26,14 @@ export default function SignUp() {
     formState: { errors, isValid },
   } = useForm<SignUpSchema>({ resolver: zodResolver(signUpSchema) });
 
+  const [user, authLoading, error] = useAuthState(auth);
+  const router = useRouter();
+
   const [createUserWithEmailAndPassword, _, loading, authError] =
     useCreateUserWithEmailAndPassword(auth);
+
+  const [signInWithGoogle, googleUser, googleLoading, googleError] =
+    useSignInWithGoogle(auth);
 
   console.log('auth Error', authError?.message);
 
@@ -34,6 +46,10 @@ export default function SignUp() {
   useEffect(() => {
     if (!authError) reset();
   }, [authError, reset]);
+
+  useEffect(() => {
+    if (user?.email) router.push('/');
+  }, [user, router]);
 
   return (
     <div>
@@ -73,6 +89,20 @@ export default function SignUp() {
             Create Account
           </button>
         </form>
+        <button
+          onClick={() => signInWithGoogle()}
+          className='mx-auto mt-4 flex w-full max-w-sm justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow'
+        >
+          <Image
+            className='h-6 w-6'
+            src='https://www.svgrepo.com/show/475656/google-color.svg'
+            loading='lazy'
+            alt='google logo'
+            width={800}
+            height={800}
+          />
+          <span>Sign up with Google</span>
+        </button>
       </div>
     </div>
   );
