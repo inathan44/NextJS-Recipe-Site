@@ -20,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${inter.className} bg-primary-light dark:bg-primary-dark`}
+        className={`${inter.className} dark bg-primary-light transition-colors dark:bg-primary-dark dark:transition-colors`}
       >
         <NavBar />
-        <div>{children}</div>
+        <div className='min-h-[calc(100vh_-_204px)] md:min-h-[calc(100vh_-_172px)]'>
+          {children}
+        </div>
         <Footer />
       </body>
     </html>
