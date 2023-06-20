@@ -24,7 +24,7 @@ export default function Home() {
     //   className='object-cover brightness-[35%]'
     // />
 
-    <main className=''>
+    <main className='dark:bg-primary-dark'>
       <section className='mx-auto max-w-6xl sm:py-4'>
         <div className='hidden sm:flex'>
           <div className='flex w-full flex-col items-center justify-center gap-6 px-4 text-darker-dark dark:text-primary-light'>
@@ -44,6 +44,7 @@ export default function Home() {
           <div className='w-full'>
             <div className='rounded-xl px-6 py-2'>
               <Image
+                priority
                 src={testHeroPic}
                 alt='Picture of pasta'
                 className='rounded-xl object-cover'
