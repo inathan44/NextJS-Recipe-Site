@@ -84,7 +84,7 @@ export default function SignUpForm() {
           />
           <button
             disabled={loading}
-            className='rounded bg-primary-dark py-1 font-semibold disabled:bg-gray-300 disabled:text-gray-200 dark:bg-primary-light dark:text-primary-dark'
+            className='rounded bg-primary-dark py-2 font-semibold text-primary-light disabled:bg-gray-300 disabled:text-gray-200 dark:bg-primary-light dark:text-primary-dark'
           >
             Create Account
           </button>

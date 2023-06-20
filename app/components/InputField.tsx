@@ -16,7 +16,7 @@ const InputField = ({ name, label, type, register, errors }: Props) => {
         </span>
       </label>
       <input
-        className='h-12 rounded px-2 text-primary-dark sm:h-8'
+        className='h-12 rounded border px-2 text-primary-dark sm:h-8'
         type={type}
         {...register(name)}
       />

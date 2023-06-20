@@ -68,7 +68,7 @@ export default function LoginModal() {
               Login
             </Button>
           </DialogTrigger>
-          <DialogContent className='bg-red-400 sm:max-w-[425px]'>
+          <DialogContent className='sm:max-w-[425px]'>
             <DialogHeader>
               <DialogTitle className='text-center'>
                 {newUser ? 'Create Account' : 'Sign In'}
@@ -87,7 +87,7 @@ export default function LoginModal() {
             <DialogFooter>
               <button
                 onClick={() => setNewUser((prev) => !prev)}
-                className='text-left text-sm text-slate-200'
+                className='text-left text-sm text-primary-dark dark:text-slate-200'
               >
                 {!newUser ? (
                   <>
