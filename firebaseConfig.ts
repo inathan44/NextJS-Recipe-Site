@@ -28,6 +28,7 @@ export const db = getFirestore();
 
 // Collection ref
 export const recipeRef = collection(db, 'recipes');
+export const userRef = collection(db, 'users');
 
 // Storage variable
 export const storage = getStorage(app);
