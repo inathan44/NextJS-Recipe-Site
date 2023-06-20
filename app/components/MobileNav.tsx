@@ -6,6 +6,7 @@ import Link from 'next/link';
 import DarkToggle from './DarkToggle';
 import SignUp from './SignInForm';
 import LoginModal from './LoginModal';
+import LoginLogoutButton from './LoginLogoutButton';
 
 // type NavProps = {
 //   open: boolean;
@@ -44,10 +45,7 @@ export default function MobileNav() {
             <Link href={'/about'}>About</Link>
           </li>
           <li>
-            <LoginModal />
-          </li>
-          <li>
-            <Link href={'/about'}>About</Link>
+            <LoginLogoutButton />
           </li>
         </ul>
       </nav>
