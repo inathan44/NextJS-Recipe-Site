@@ -1,9 +1,16 @@
-import { recipeRef, storage, db } from '@/firebaseConfig';
-import { addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { recipeRef, storage, db, userRef } from '@/firebaseConfig';
+import {
+  arrayUnion,
+  deleteDoc,
+  doc,
+  updateDoc,
+  writeBatch,
+} from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 import { v4 } from 'uuid';
 import { RecipeSchema } from '../models/schema';
+import { User } from 'firebase/auth';
 
 export async function createRecipeDoc(
   imageUrl: string,
@@ -12,7 +19,8 @@ export async function createRecipeDoc(
   setAddDocError: React.Dispatch<React.SetStateAction<string>>,
   data: RecipeSchema,
   reset: any,
-  owner: string
+  owner: string,
+  user: User
 ) {
   setAddDocLoading(true);
 
@@ -31,7 +39,17 @@ export async function createRecipeDoc(
   };
 
   try {
-    await addDoc(recipeRef, recipeToAdd);
+    // await addDoc(recipeRef, recipeToAdd);
+
+    const batch = writeBatch(db);
+
+    const recipeDocRef = doc(recipeRef);
+    batch.set(recipeDocRef, recipeToAdd);
+
+    const userDoc = doc(db, 'users', user.uid);
+    batch.update(userDoc, {
+      recipes: arrayUnion(recipeDocRef.id),
+    });
 
     setImageUrl('');
     setAddDocError('');
@@ -39,7 +57,9 @@ export async function createRecipeDoc(
     const fileInput: any = document.getElementById('images');
     fileInput.value = null;
 
-    reset();
+    await batch.commit();
+
+    // reset();
   } catch (e) {
     console.log('<><><><><>', e);
     throw new Error('This no worky');
@@ -124,6 +144,7 @@ export async function updateRecipe(
   } catch (e) {
     console.log(e);
     setAddDocLoading(false);
+    throw new Error('error');
   }
 }
 
@@ -137,5 +158,6 @@ export async function deleteRecipe(
     router.push('/recipes');
   } catch (e: any) {
     console.log(e);
+    throw new Error('error');
   }
 }
