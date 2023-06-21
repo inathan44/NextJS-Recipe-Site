@@ -25,6 +25,12 @@ export default function NavBar() {
           >
             Recipes
           </Link>
+          <Link
+            className='text-lg font-semibold dark:text-primary-light'
+            href={'admin'}
+          >
+            Admin
+          </Link>
           <LoginLogoutButton />
         </div>
 
