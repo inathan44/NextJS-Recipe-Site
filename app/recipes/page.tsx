@@ -7,16 +7,12 @@ import FilterSortBar from './components/FilterSortBar';
 import { Suspense } from 'react';
 import AllRecipes from './components/AllRecipes';
 
-export default async function Recipes({
-  searchParams,
-}: {
-  searchParams: { search?: string };
-}) {
-  const searchQuery = searchParams.search ?? '';
+export default async function Recipes() {
+  // const searchQuery = searchParams.search ?? '';
 
-  const recipesData: Promise<Recipe[]> = getAllRecipes(searchQuery);
+  const recipesData: Promise<Recipe[]> = getAllRecipes();
 
-  // const recipes = await recipesData;
+  // // const recipes = await recipesData;
 
   return (
     <>
