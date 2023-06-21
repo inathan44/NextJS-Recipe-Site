@@ -10,6 +10,7 @@ type Recipe = {
   prepTime?: number;
   servings?: number;
   owner?: string;
+  likes?: number;
 };
 
 type Ingredient = {
