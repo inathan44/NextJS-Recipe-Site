@@ -11,6 +11,7 @@ import PrepItem from '@/app/components/PrepItem';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebaseConfig';
 import EditRecipeLink from '@/app/components/EditRecipeLink';
+import LikeRecipe from './components/LikeRecipe';
 // import LeftArrowIcon from '@/app/components/leftArrowIcon';
 
 type Params = {
@@ -35,12 +36,12 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
             <p className='font-semibold dark:text-primary-light md:hidden'>
               Recipe
             </p>
-            <Link
+            {/* <Link
               className='rounded-full px-3 py-1 transition-all hover:bg-primary-dark hover:text-primary-light dark:bg-primary-light dark:text-primary-dark dark:hover:bg-darker-light dark:hover:text-primary-dark'
               href={`recipes/${recipe?.id}/edit`}
             >
               Edit
-            </Link>
+            </Link> */}
             <EditRecipeLink recipe={recipe} />
           </div>
         </div>
@@ -69,11 +70,16 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
                   {startCase(recipe?.name)}
                 </h1>
 
+                {/* Tags and icon Chips */}
                 <div className='flex items-center gap-3'>
                   {recipe?.tags?.map((tag, idx) => (
                     <DesktopRecipeTag tag={tag} key={idx} />
                   ))}
                   <PrinterIcon />
+                  <LikeRecipe
+                    recipeImage={recipe?.image || ''}
+                    recipeName={recipe?.name!}
+                  />
                 </div>
 
                 <div className='flex gap-4 text-sm'>
@@ -111,7 +117,7 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
 }
 
 export async function generateStaticParams() {
-  const recipesData: any = getAllRecipes('');
+  const recipesData: any = getAllRecipes();
   const recipes = await recipesData;
 
   if (recipes)
