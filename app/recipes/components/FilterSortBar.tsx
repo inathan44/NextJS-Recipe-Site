@@ -36,10 +36,10 @@ const FilterSortBar = () => {
       }
 
       startTransition(() => {
-        router.replace(`${pathname}?${params.toString()}`);
+        router.replace(`recipes/search/?${params.toString()}`);
       });
     },
-    [pathname, router]
+    [router]
   );
 
   // EFFECT: Set Initial Params
