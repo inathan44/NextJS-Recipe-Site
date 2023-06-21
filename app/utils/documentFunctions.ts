@@ -1,9 +1,17 @@
 import { recipeRef, storage, db, userRef } from '@/firebaseConfig';
 import {
+  FieldValue,
+  Firestore,
+  arrayRemove,
   arrayUnion,
   deleteDoc,
   doc,
+  getDoc,
+  getDocs,
+  increment,
+  query,
   updateDoc,
+  where,
   writeBatch,
 } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -36,11 +44,10 @@ export async function createRecipeDoc(
     prepTime: data.prepTime,
     servings: data.servings,
     owner,
+    likes: 0,
   };
 
   try {
-    // await addDoc(recipeRef, recipeToAdd);
-
     const batch = writeBatch(db);
 
     const recipeDocRef = doc(recipeRef);
@@ -59,10 +66,10 @@ export async function createRecipeDoc(
 
     await batch.commit();
 
-    // reset();
+    reset();
   } catch (e) {
     console.log('<><><><><>', e);
-    throw new Error('This no worky');
+    throw new Error('Error adding recipe, try again later.');
   }
 }
 
@@ -159,5 +166,64 @@ export async function deleteRecipe(
   } catch (e: any) {
     console.log(e);
     throw new Error('error');
+  }
+}
+
+export async function getLikedRecipes(userId: string) {
+  const userDoc = doc(db, 'users', userId);
+  const userSnapshot = await getDoc(userDoc);
+  return userSnapshot.data()?.likedRecipes || [];
+  return [];
+}
+
+export async function isRecipeLiked(
+  userId: string,
+  recipeId: string
+): Promise<boolean> {
+  try {
+    const userDoc = doc(db, 'users', userId);
+    const likeRef = doc(userDoc, 'likes', recipeId);
+    const likeDoc = await getDoc(likeRef);
+
+    return likeDoc.exists();
+  } catch (e: any) {
+    throw new Error(e.message);
+    return false;
+  }
+}
+
+export async function likeRecipe(
+  recipeId: string,
+  userId: string,
+  recipeName: string,
+  recipeImage: string
+) {
+  try {
+    const batch = writeBatch(db);
+
+    const userDoc = doc(db, 'users', userId);
+    const likeRef = doc(userDoc, 'likes', recipeId);
+
+    const recipeRef = doc(db, 'recipes', recipeId);
+
+    if (await isRecipeLiked(userId, recipeId)) {
+      // batch.update(userDoc, {
+      //   likedRecipes: arrayRemove(recipeId),
+      // });
+      batch.update(recipeRef, { likes: increment(-1) });
+
+      batch.delete(likeRef);
+    } else {
+      // batch.update(userDoc, {
+      //   likedRecipes: arrayUnion(recipeId),
+      // });
+      batch.update(recipeRef, { likes: increment(1) });
+
+      batch.set(likeRef, { recipeId, recipeName, recipeImage });
+    }
+
+    await batch.commit();
+  } catch (e) {
+    console.log('This the second one error');
   }
 }
