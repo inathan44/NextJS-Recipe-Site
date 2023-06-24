@@ -148,10 +148,10 @@ export async function updateRecipe(
   try {
     await updateDoc(recipeRef, recipeToAdd);
     setAddDocLoading(false);
-  } catch (e) {
+  } catch (e: any) {
     console.log(e);
     setAddDocLoading(false);
-    throw new Error('error');
+    throw new Error(e.message);
   }
 }
 
@@ -187,6 +187,7 @@ export async function isRecipeLiked(
 
     return likeDoc.exists();
   } catch (e: any) {
+    console.log('eeeee', e);
     throw new Error(e.message);
     return false;
   }
@@ -224,6 +225,26 @@ export async function likeRecipe(
 
     await batch.commit();
   } catch (e) {
-    console.log('This the second one error');
+    console.log(e);
+  }
+}
+
+export async function isOwner(
+  userId: string,
+  recipeId: string
+): Promise<boolean> {
+  const recipeRef = doc(db, 'recipes', recipeId);
+
+  const recipeDoc = await getDoc(recipeRef);
+
+  return recipeDoc.data()?.owner === userId;
+}
+
+export async function getUserRecipes(userId: string) {
+  const q = query(recipeRef, where('owner', '==', userId));
+  const querySnapshot = await getDocs(q);
+
+  if (!querySnapshot.empty) {
+    return querySnapshot.docs.map((doc) => doc.data());
   }
 }
