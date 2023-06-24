@@ -25,7 +25,11 @@ import SignUp from './SignInForm';
 import SignUpForm from './SignUpForm';
 import SignInForm from './SignInForm';
 
-export default function LoginModal() {
+type Props = {
+  children: React.ReactNode;
+};
+
+export default function LoginModal({ children }: Props) {
   const [user] = useAuthState(auth);
   const router = useRouter();
 
@@ -65,7 +69,7 @@ export default function LoginModal() {
         <Dialog modal open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant='ghost' className='dark:hover:text-primary-light'>
-              Login
+              {children}
             </Button>
           </DialogTrigger>
           <DialogContent className='sm:max-w-[425px]'>

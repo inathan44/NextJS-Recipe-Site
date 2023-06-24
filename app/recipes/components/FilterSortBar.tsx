@@ -13,6 +13,7 @@ import {
 } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebaseConfig';
+import LoginModal from '@/app/components/LoginModal';
 
 const FilterSortBar = () => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -87,7 +88,7 @@ const FilterSortBar = () => {
         </form>
         <FiltersIcon />
       </div>
-      {user?.email && (
+      {user?.email ? (
         <div className='w-full text-right'>
           <Link
             href={'/recipes/add'}
@@ -95,6 +96,10 @@ const FilterSortBar = () => {
           >
             Add a Recipe
           </Link>
+        </div>
+      ) : (
+        <div className='flex justify-end'>
+          <LoginModal>Add A Recipe</LoginModal>
         </div>
       )}
     </div>

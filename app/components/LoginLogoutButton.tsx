@@ -21,7 +21,7 @@ export default function LoginLogoutButton() {
           Log out
         </Button>
       ) : (
-        <LoginModal />
+        <LoginModal>Login</LoginModal>
       )}
     </>
   );

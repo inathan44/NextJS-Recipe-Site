@@ -12,7 +12,7 @@ const HeartIcon = ({ liked }: Props) => {
       viewBox='0 0 24 24'
       strokeWidth={1.5}
       stroke='currentColor'
-      className={`h-8 w-8 border transition-colors ${
+      className={`h-8 w-8 transition-colors ${
         liked ? 'fill-red-500' : 'fill-transparent'
       }`}
     >

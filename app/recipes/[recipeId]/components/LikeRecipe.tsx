@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import HeartIcon from '@/app/components/HeartIcon';
 import { isRecipeLiked, likeRecipe } from '@/app/utils/documentFunctions';
+import LoginModal from '@/app/components/LoginModal';
 const regex = /[^/]*$/;
 
 type LikeProps = {
@@ -49,9 +50,15 @@ const LikeRecipe = ({ recipeImage, recipeName }: LikeProps) => {
 
   return (
     <>
-      <button onClick={handleClick}>
-        <HeartIcon liked={recipeIsLiked} />
-      </button>
+      {user?.email ? (
+        <button onClick={handleClick}>
+          <HeartIcon liked={recipeIsLiked} />
+        </button>
+      ) : (
+        <LoginModal>
+          <HeartIcon />
+        </LoginModal>
+      )}
     </>
   );
 };

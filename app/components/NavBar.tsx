@@ -21,13 +21,13 @@ export default function NavBar() {
           <DarkToggle />
           <Link
             className='text-lg font-semibold dark:text-primary-light'
-            href={'recipes'}
+            href={'/recipes'}
           >
             Recipes
           </Link>
           <Link
             className='text-lg font-semibold dark:text-primary-light'
-            href={'admin'}
+            href={'/admin'}
           >
             Admin
           </Link>

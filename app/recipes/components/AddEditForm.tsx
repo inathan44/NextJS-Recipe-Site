@@ -155,7 +155,7 @@ export default function AddEditForm({ recipeId, type }: Params) {
         {
           loading: 'Updating Recipe',
           success: 'Recipe Updated',
-          error: 'Error updating recipe, try again later',
+          error: (err) => err.toString(),
         }
       );
     }
@@ -175,7 +175,7 @@ export default function AddEditForm({ recipeId, type }: Params) {
         {
           loading: 'Adding Recipe...',
           success: 'Recipe added',
-          error: 'Error updating recipe, try again later',
+          error: 'Error adding recipe, try again later',
         }
       );
     }
