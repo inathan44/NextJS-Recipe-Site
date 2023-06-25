@@ -9,13 +9,15 @@ import LoginModal from '@/app/components/LoginModal';
 const regex = /[^/]*$/;
 
 type LikeProps = {
-  recipeName: string;
-  recipeImage: string;
+  recipeInfo: RecipeSnippet;
+  likes: number;
 };
 
-const LikeRecipe = ({ recipeImage, recipeName }: LikeProps) => {
+const LikeRecipe = ({ recipeInfo, likes }: LikeProps) => {
   const [user] = useAuthState(auth);
   const [recipeIsLiked, setRecipeIsLiked] = useState<boolean>(false);
+  const [clientLikes, setClientLikes] = useState<number>(likes);
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   const pathname = usePathname();
 
@@ -35,15 +37,21 @@ const LikeRecipe = ({ recipeImage, recipeName }: LikeProps) => {
 
     if (recipeId && user?.uid) {
       try {
-        await likeRecipe(recipeId, user?.uid, recipeName, recipeImage);
+        setDisabled(true);
+        await likeRecipe(recipeInfo, user.uid);
 
         const bool = await isRecipeLiked(
           user?.uid || '',
           match ? match[0] : ''
         );
         setRecipeIsLiked(bool);
+        setClientLikes((prev) => {
+          return prev + (bool ? 1 : -1);
+        });
+        setDisabled(false);
       } catch (e) {
         console.log('error');
+        setDisabled(false);
       }
     }
   }
@@ -51,12 +59,12 @@ const LikeRecipe = ({ recipeImage, recipeName }: LikeProps) => {
   return (
     <>
       {user?.email ? (
-        <button onClick={handleClick}>
-          <HeartIcon liked={recipeIsLiked} />
+        <button className='' onClick={handleClick} disabled={disabled}>
+          <HeartIcon liked={recipeIsLiked} likes={clientLikes} />
         </button>
       ) : (
         <LoginModal>
-          <HeartIcon />
+          <HeartIcon likes={clientLikes} />
         </LoginModal>
       )}
     </>

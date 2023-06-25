@@ -137,6 +137,7 @@ export default function AddEditForm({ recipeId, type }: Params) {
         success: 'Image uploaded',
         error: 'Error uploading image :(',
       });
+    console.log('imageUrl', imageUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image]);
 
@@ -150,7 +151,8 @@ export default function AddEditForm({ recipeId, type }: Params) {
           setAddDocLoading,
           setAddDocError,
           data,
-          recipeId
+          recipeId,
+          user.uid
         ),
         {
           loading: 'Updating Recipe',
@@ -175,7 +177,7 @@ export default function AddEditForm({ recipeId, type }: Params) {
         {
           loading: 'Adding Recipe...',
           success: 'Recipe added',
-          error: 'Error adding recipe, try again later',
+          error: (err) => `This just happened: ${err.toString()}`,
         }
       );
     }
@@ -193,8 +195,6 @@ export default function AddEditForm({ recipeId, type }: Params) {
       setDeleteBuffer(false);
     }
   };
-
-  console.log('addDocLoading', addDocLoading);
 
   return (
     <>

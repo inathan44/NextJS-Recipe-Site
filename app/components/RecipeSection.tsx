@@ -12,7 +12,7 @@ type SectionProps = {
 };
 
 export default function RecipeSection(props: SectionProps) {
-  const [expand, setExpand] = useState<boolean>(false);
+  const [expand, setExpand] = useState<boolean>(true);
 
   function toggleExpand() {
     setExpand((prev) => !prev);

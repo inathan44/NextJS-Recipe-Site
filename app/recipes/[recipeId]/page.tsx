@@ -25,6 +25,14 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
 
   const recipe = await recipeData;
 
+  const recipeSnippet: RecipeSnippet = {
+    recipeId: recipe?.id!,
+    recipeName: recipe?.name!,
+    recipeDescription: recipe?.description,
+    recipeImage: recipe?.image,
+    recipeTags: recipe?.tags,
+  };
+
   return (
     <>
       <div className=''>
@@ -33,27 +41,29 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
             <div className='rounded-full bg-darker-light p-1'>
               <LeftArrowIcon />
             </div>
+
             <p className='font-semibold dark:text-primary-light md:hidden'>
               Recipe
             </p>
-            {/* <Link
-              className='rounded-full px-3 py-1 transition-all hover:bg-primary-dark hover:text-primary-light dark:bg-primary-light dark:text-primary-dark dark:hover:bg-darker-light dark:hover:text-primary-dark'
-              href={`recipes/${recipe?.id}/edit`}
-            >
-              Edit
-            </Link> */}
+
             <EditRecipeLink recipe={recipe} />
           </div>
         </div>
 
         <div className='mx-auto max-w-5xl'>
           <div className='mx-3'>
-            <h1 className='mb-3 text-3xl dark:text-primary-light md:hidden'>
-              {startCase(recipe?.name)}
-            </h1>
+            <div className='mb-3 flex items-center gap-4'>
+              <h1 className='text-3xl dark:text-primary-light md:hidden'>
+                {startCase(recipe?.name)}
+              </h1>
+              <LikeRecipe
+                likes={recipe?.likes || 0}
+                recipeInfo={recipeSnippet}
+              />
+            </div>
             <div className='h-84 flex justify-center md:mb-4'>
-              <div className='relative mx-auto max-w-lg md:mx-0 md:w-full'>
-                {recipe && (
+              {recipe?.image && (
+                <div className='relative mx-auto max-w-lg md:mx-0 md:w-full'>
                   <Image
                     src={recipe.image}
                     // fill
@@ -62,8 +72,8 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
                     alt='Recipe photos'
                     className='w-full max-w-md rounded-2xl object-contain'
                   />
-                )}
-              </div>
+                </div>
+              )}
 
               <div className='mx-6 hidden w-full flex-col gap-4 pl-8 md:flex'>
                 <h1 className='text-5xl font-bold dark:text-primary-light'>
@@ -77,8 +87,8 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
                   ))}
                   <PrinterIcon />
                   <LikeRecipe
-                    recipeImage={recipe?.image || ''}
-                    recipeName={recipe?.name!}
+                    recipeInfo={recipeSnippet}
+                    likes={recipe?.likes || 0}
                   />
                 </div>
 
