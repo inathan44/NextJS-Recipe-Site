@@ -42,7 +42,7 @@ export default function MobileNav() {
             <Link href={'/recipes'}>Recipes</Link>
           </li>
           <li>
-            <Link href={'/about'}>About</Link>
+            <Link href={'/account'}>Account</Link>
           </li>
           <li>
             <LoginLogoutButton />

@@ -4,6 +4,7 @@ import MobileNav from './MobileNav';
 
 import DarkToggle from './DarkToggle';
 import LoginLogoutButton from './LoginLogoutButton';
+import AccountLink from './AccountLink';
 
 export default function NavBar() {
   return (
@@ -25,12 +26,7 @@ export default function NavBar() {
           >
             Recipes
           </Link>
-          <Link
-            className='text-lg font-semibold dark:text-primary-light'
-            href={'/admin'}
-          >
-            Admin
-          </Link>
+          <AccountLink />
           <LoginLogoutButton />
         </div>
 
