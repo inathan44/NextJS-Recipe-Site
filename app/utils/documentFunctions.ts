@@ -4,6 +4,7 @@ import {
   Firestore,
   arrayRemove,
   arrayUnion,
+  collection,
   deleteDoc,
   doc,
   getDoc,
@@ -19,6 +20,7 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 import { v4 } from 'uuid';
 import { RecipeSchema } from '../models/schema';
 import { User } from 'firebase/auth';
+import { removeUndefinedProperties } from './helperFunctions';
 
 export async function createRecipeDoc(
   imageUrl: string,
@@ -33,7 +35,7 @@ export async function createRecipeDoc(
   setAddDocLoading(true);
 
   // Checking type validity
-  const recipeToAdd: Recipe = {
+  let recipeToAdd: Partial<Recipe> = {
     name: data.name,
     ingredients: data.ingredients,
     directions: data.directions.map(({ direction }) => direction),
@@ -47,16 +49,36 @@ export async function createRecipeDoc(
     likes: 0,
   };
 
+  recipeToAdd = removeUndefinedProperties(recipeToAdd);
+
   try {
     const batch = writeBatch(db);
 
     const recipeDocRef = doc(recipeRef);
+
     batch.set(recipeDocRef, recipeToAdd);
 
     const userDoc = doc(db, 'users', user.uid);
-    batch.update(userDoc, {
-      recipes: arrayUnion(recipeDocRef.id),
-    });
+    const myRecipesSubcollectionRef = doc(
+      userDoc,
+      'myRecipes',
+      recipeDocRef.id
+    );
+
+    batch.set(
+      myRecipesSubcollectionRef,
+      removeUndefinedProperties({
+        recipeId: recipeDocRef.id,
+        recipeName: data.name,
+        recipeDescription: data.description,
+        recipeImage: data.image,
+        recipeTags: data.tags,
+      }) as RecipeSnippet
+    );
+
+    // batch.update(userDoc, {
+    //   recipes: arrayUnion(recipeDocRef.id),
+    // });
 
     setImageUrl('');
     setAddDocError('');
@@ -67,9 +89,9 @@ export async function createRecipeDoc(
     await batch.commit();
 
     reset();
-  } catch (e) {
+  } catch (e: any) {
     console.log('<><><><><>', e);
-    throw new Error('Error adding recipe, try again later.');
+    throw new Error(e.message);
   }
 }
 
@@ -126,14 +148,22 @@ export async function updateRecipe(
   setAddDocLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setAddDocError: React.Dispatch<React.SetStateAction<string>>,
   data: RecipeSchema,
-  recipeId: string
+  recipeId: string,
+  userId: string
 ) {
   setAddDocLoading(true);
 
+  const batch = writeBatch(db);
+
+  console.log('data', data);
+
   const recipeRef = doc(db, 'recipes', recipeId);
+  const userDoc = doc(db, 'users', userId);
+
+  const myRecipesSubcollectionRef = doc(userDoc, 'myRecipes', recipeId);
 
   // Checking type validity
-  const recipeToAdd: Recipe = {
+  let recipeToAdd: Partial<Recipe> = {
     name: data.name,
     ingredients: data.ingredients,
     directions: data.directions.map(({ direction }) => direction),
@@ -145,8 +175,21 @@ export async function updateRecipe(
     servings: data.servings,
   };
 
+  recipeToAdd = removeUndefinedProperties(recipeToAdd);
+
+  let userRecipe: Partial<RecipeSnippet> = {
+    recipeDescription: data.description,
+    recipeImage: imageUrl,
+    recipeTags: data.tags,
+    recipeName: data.name,
+  };
+
+  userRecipe = removeUndefinedProperties(userRecipe);
+
   try {
-    await updateDoc(recipeRef, recipeToAdd);
+    batch.update(recipeRef, recipeToAdd);
+    batch.update(myRecipesSubcollectionRef, userRecipe);
+    await batch.commit();
     setAddDocLoading(false);
   } catch (e: any) {
     console.log(e);
@@ -169,13 +212,6 @@ export async function deleteRecipe(
   }
 }
 
-export async function getLikedRecipes(userId: string) {
-  const userDoc = doc(db, 'users', userId);
-  const userSnapshot = await getDoc(userDoc);
-  return userSnapshot.data()?.likedRecipes || [];
-  return [];
-}
-
 export async function isRecipeLiked(
   userId: string,
   recipeId: string
@@ -194,10 +230,14 @@ export async function isRecipeLiked(
 }
 
 export async function likeRecipe(
-  recipeId: string,
-  userId: string,
-  recipeName: string,
-  recipeImage: string
+  {
+    recipeName,
+    recipeId,
+    recipeDescription,
+    recipeImage,
+    recipeTags,
+  }: RecipeSnippet,
+  userId: string
 ) {
   try {
     const batch = writeBatch(db);
@@ -208,19 +248,19 @@ export async function likeRecipe(
     const recipeRef = doc(db, 'recipes', recipeId);
 
     if (await isRecipeLiked(userId, recipeId)) {
-      // batch.update(userDoc, {
-      //   likedRecipes: arrayRemove(recipeId),
-      // });
       batch.update(recipeRef, { likes: increment(-1) });
 
       batch.delete(likeRef);
     } else {
-      // batch.update(userDoc, {
-      //   likedRecipes: arrayUnion(recipeId),
-      // });
       batch.update(recipeRef, { likes: increment(1) });
 
-      batch.set(likeRef, { recipeId, recipeName, recipeImage });
+      batch.set(likeRef, {
+        recipeId,
+        recipeName,
+        recipeImage,
+        recipeDescription,
+        recipeTags,
+      });
     }
 
     await batch.commit();
@@ -240,11 +280,27 @@ export async function isOwner(
   return recipeDoc.data()?.owner === userId;
 }
 
-export async function getUserRecipes(userId: string) {
-  const q = query(recipeRef, where('owner', '==', userId));
-  const querySnapshot = await getDocs(q);
+export async function getRecipesByField(
+  userId: string,
+  field: string
+): Promise<RecipeSnippet[]> {
+  const querySnapshot = await getDocs(
+    collection(db, `users/${userId}/${field}`)
+  );
 
   if (!querySnapshot.empty) {
-    return querySnapshot.docs.map((doc) => doc.data());
+    return querySnapshot.docs.map((doc) => {
+      return { ...(doc.data() as RecipeSnippet), id: doc.id };
+    });
+  } else {
+    console.log('you own NOTHing');
+    return [];
   }
+}
+
+export async function getUser(userId: string) {
+  const userDoc = doc(db, 'users', userId);
+  const data = (await getDoc(userDoc)).data();
+
+  return data;
 }
