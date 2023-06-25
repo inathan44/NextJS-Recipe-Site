@@ -18,3 +18,14 @@ type Ingredient = {
   amount: number;
   measurement: string;
 };
+
+type RecipeSnippet = {
+  recipeId: string;
+  recipeName: string;
+  recipeImage?: string;
+  recipeDescription?: string;
+  recipeTags?: string[];
+  likes?: number;
+};
+
+type UserDoc = {};
