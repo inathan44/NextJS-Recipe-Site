@@ -5,6 +5,8 @@ import { useState } from 'react';
 import RecipeSection from './RecipeSection';
 import PrepInfo from './PrepInfo';
 import React from 'react';
+import CommentSection from '../recipes/[recipeId]/components/CommentSection';
+import CommentInput from '../recipes/[recipeId]/components/CommentInput';
 
 type InfoProps = {
   recipe: Recipe;
@@ -54,6 +56,12 @@ export default function RecipeInfo({ recipe }: InfoProps) {
             </React.Fragment>
           ))}
         </ol>
+      </RecipeSection>
+      <RecipeSection name='Comments' bgColor='#303436' color='#262B2C'>
+        <div className='overflow-hidden'>
+          <CommentInput />
+          <CommentSection />
+        </div>
       </RecipeSection>
     </>
   );

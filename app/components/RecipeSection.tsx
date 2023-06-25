@@ -8,7 +8,6 @@ type SectionProps = {
   children: React.ReactNode;
   name: string;
   bgColor?: string;
-  // servingsDifference: number | 'N/A';
 };
 
 export default function RecipeSection(props: SectionProps) {
@@ -24,7 +23,6 @@ export default function RecipeSection(props: SectionProps) {
         className='justify-between overflow-hidden rounded-t-3xl px-6 py-4 text-lighter-light'
         style={{
           backgroundColor: props.color || '',
-          // background: `linear-gradient(to bottom, ${props.color}, #262B2C)`,
         }}
       >
         <button
@@ -32,9 +30,7 @@ export default function RecipeSection(props: SectionProps) {
           className='flex w-full grow items-start justify-between'
         >
           <p className='mb-2 grow text-left text-xl font-bold'>{props.name}</p>
-          {/* <button className='' onClick={toggleExpand}> */}
-          <ChevronIcon />
-          {/* </button> */}
+          <ChevronIcon rotate={expand} />
         </button>
         <div
           className='grid overflow-hidden px-4 font-light transition-all'

@@ -1,4 +1,8 @@
-export default function ChevronIcon() {
+type Props = {
+  rotate: boolean;
+};
+
+export default function ChevronIcon({ rotate }: Props) {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -6,7 +10,7 @@ export default function ChevronIcon() {
       viewBox='0 0 24 24'
       strokeWidth={1.5}
       stroke='currentColor'
-      className='h-6 w-6'
+      className={`h-6 w-6 transition-all ${rotate ? '-rotate-90' : ''}`}
     >
       <path
         strokeLinecap='round'

@@ -56,10 +56,12 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
               <h1 className='text-3xl dark:text-primary-light md:hidden'>
                 {startCase(recipe?.name)}
               </h1>
-              <LikeRecipe
-                likes={recipe?.likes || 0}
-                recipeInfo={recipeSnippet}
-              />
+              <div className='md:hidden'>
+                <LikeRecipe
+                  likes={recipe?.likes || 0}
+                  recipeInfo={recipeSnippet}
+                />
+              </div>
             </div>
             <div className='h-84 flex justify-center md:mb-4'>
               {recipe?.image && (
@@ -70,7 +72,7 @@ export default async function SingleRecipe({ params: { recipeId } }: Params) {
                     width={1920}
                     height={1080}
                     alt='Recipe photos'
-                    className='w-full max-w-md rounded-2xl object-contain'
+                    className='max-h-96 w-full max-w-md rounded-2xl object-contain'
                   />
                 </div>
               )}
