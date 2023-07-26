@@ -1,5 +1,5 @@
 type Recipe = {
-  id?: string;
+  id: string;
   name: string;
   ingredients: Ingredient[];
   directions: string[];
