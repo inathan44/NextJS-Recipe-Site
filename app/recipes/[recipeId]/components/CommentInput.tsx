@@ -1,12 +1,11 @@
 'use client';
-
 import { useState } from 'react';
 
 const CommentInput = () => {
   const [comment, setComment] = useState<string>('');
 
   function handleSubmit() {
-    alert(comment);
+    console.log('comment', comment);
   }
 
   return (
