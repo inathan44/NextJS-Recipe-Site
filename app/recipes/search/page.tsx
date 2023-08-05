@@ -16,8 +16,6 @@ export default async function Recipes({
 
   const recipesData: Promise<Recipe[]> = searchFilterRecipes(searchQuery);
 
-  // // const recipes = await recipesData;
-
   return (
     <>
       <FilterSortBar />
