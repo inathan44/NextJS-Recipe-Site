@@ -6,13 +6,16 @@ import RecipeCard from './components/RecipeCard';
 import FilterSortBar from './components/FilterSortBar';
 import { Suspense } from 'react';
 import AllRecipes from './components/AllRecipes';
+import searchFilterRecipes from '@/lib/searchFilterRecipes';
 
-export default async function Recipes() {
-  // const searchQuery = searchParams.search ?? '';
+export default async function Recipes({
+  searchParams,
+}: {
+  searchParams: { search?: string };
+}) {
+  const searchQuery = searchParams.search ?? '';
 
-  const recipesData: Promise<Recipe[]> = getAllRecipes();
-
-  // // const recipes = await recipesData;
+  const recipesData: Promise<Recipe[]> = searchFilterRecipes(searchQuery);
 
   return (
     <>
