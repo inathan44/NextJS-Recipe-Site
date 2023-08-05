@@ -18,5 +18,9 @@ export default async function AllRecipes({ promise }: Props) {
     return <RecipeCard recipe={recipeProp} key={recipe.id} />;
   });
 
-  return content;
+  if (content.length > 0) {
+    return content;
+  } else {
+    return <p className='text-center text-xl'>No results.</p>;
+  }
 }
