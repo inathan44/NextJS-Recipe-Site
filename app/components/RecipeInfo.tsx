@@ -63,7 +63,11 @@ export default function RecipeInfo({ recipe }: InfoProps) {
               <React.Fragment key={idx}>
                 <div className='flex items-center gap-4'>
                   <input type='checkbox' />
-                  <li>{item}</li>
+                  <li>
+                    {idx + 1}
+                    {`. `}
+                    {item}
+                  </li>
                 </div>
               </React.Fragment>
             ))}
