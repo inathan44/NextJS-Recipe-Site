@@ -37,7 +37,7 @@ const FilterSortBar = () => {
       }
 
       startTransition(() => {
-        router.replace(`recipes/search/?${params.toString()}`);
+        router.replace(`/recipes/search/?${params.toString()}`);
       });
     },
     [router]
