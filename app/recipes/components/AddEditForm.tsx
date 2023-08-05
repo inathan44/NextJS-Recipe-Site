@@ -19,6 +19,8 @@ import PlusIcon from '@/app/components/PlusIcon';
 import XIcon from '@/app/components/XIcon';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebaseConfig';
+import { customizers, units } from '@/lib/unitsOfMeasurement';
+import { startCase } from 'lodash';
 
 type Params = {
   recipeId?: string;
@@ -71,7 +73,12 @@ export default function AddEditForm({ recipeId, type }: Params) {
 
   useEffect(() => {
     if (ingredientFields.length === 0)
-      ingredientAppend({ name: '', amount: 0, measurement: '' });
+      ingredientAppend({
+        name: '',
+        amount: '' as unknown as number,
+        measurement: '',
+        custom: '',
+      });
     if (directionsFields.length === 0) directionsAppend({ direction: '' });
   }, [
     directionsAppend,
@@ -219,10 +226,10 @@ export default function AddEditForm({ recipeId, type }: Params) {
           )}
         </div>
 
-        <div className='mx-auto mt-8 max-w-md'>
+        <div className='mx-auto mt-8 max-w-xl'>
           <form onSubmit={handleSubmit(onSubmit)} className='text-primary-dark'>
             <label
-              className='mt-4 block text-lg font-semibold dark:text-primary-light'
+              className='mt-4 block text-lg font-semibold dark:text-primary-light '
               htmlFor='name'
             >
               Recipe Name <span className='text-red-500'>*</span>
@@ -246,42 +253,90 @@ export default function AddEditForm({ recipeId, type }: Params) {
                   className='dark flex w-16 items-center justify-between rounded-full px-2 dark:bg-primary-light dark:text-primary-dark'
                   type='button'
                   onClick={() =>
-                    ingredientAppend({ name: '', measurement: '', amount: 0 })
+                    ingredientAppend({
+                      name: '',
+                      amount: '' as unknown as number,
+                      measurement: '',
+                      custom: '',
+                    })
                   }
                 >
                   <p>Add</p>
                   <PlusIcon />
                 </button>
               </div>
-              <div className='flex dark:text-primary-light'>
-                <p className='w-full'>Name</p>
-                <p className='w-full'>Unit</p>
-                <p className='w-full'>Amount</p>
-              </div>
-              <div className='flex flex-col gap-2'>
+
+              <div className='flex flex-col gap-8'>
                 {ingredientFields.map((field, idx) => (
-                  <div className='flex gap-3' key={field.id}>
-                    <input
-                      placeholder={`Olive oil`}
-                      className='h-10 w-full rounded bg-slate-100 px-3 text-xl placeholder:text-base'
-                      {...register(`ingredients.${idx}.name`)}
-                    />
-                    <input
-                      placeholder={`tablespoon`}
-                      className='h-10 w-full rounded bg-slate-100 px-3 text-xl placeholder:text-base'
-                      {...register(`ingredients.${idx}.measurement`)}
-                    />
-                    <input
-                      placeholder={`2`}
-                      className='h-10 w-full rounded bg-slate-100 px-3 text-xl placeholder:text-base'
-                      {...register(`ingredients.${idx}.amount`)}
-                    />
+                  <div className='flex flex-col gap-1' key={field.id}>
+                    <div className='flex items-center gap-2'>
+                      <label className='w-16 shrink-0 dark:text-primary-light'>
+                        Amount
+                      </label>
+                      <input
+                        placeholder={`2`}
+                        className='h-10  grow rounded bg-slate-100 px-3 placeholder:text-base'
+                        {...register(`ingredients.${idx}.amount`)}
+                      />
+                    </div>
+                    <div className='flex items-center gap-2'>
+                      <label className='w-16 shrink-0 dark:text-primary-light'>
+                        Unit
+                      </label>
+                      <select
+                        className='h-10 grow rounded bg-slate-100 px-3'
+                        {...register(`ingredients.${idx}.measurement`)}
+                        onChange={(e) =>
+                          setValue(
+                            `ingredients.${idx}.measurement`,
+                            e.target.value
+                          )
+                        }
+                      >
+                        <option value=''>Select Measurement</option>
+                        <option value='N/A'>Not Applicable</option>
+                        {units.map((unit) => (
+                          <option value={unit} key={unit}>
+                            {startCase(unit)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className='flex items-center gap-2'>
+                      <label className='w-16 shrink-0 dark:text-primary-light'>
+                        Name
+                      </label>
+                      <input
+                        placeholder={`Olive oil`}
+                        className='h-10 grow rounded bg-slate-100 px-3 placeholder:text-base'
+                        {...register(`ingredients.${idx}.name`)}
+                      />
+                    </div>
+                    <div className='flex items-center gap-2'>
+                      <label className='w-16 shrink-0 dark:text-primary-light'>
+                        Custom
+                      </label>
+                      <select
+                        className='h-10 grow rounded bg-slate-100 px-3'
+                        {...register(`ingredients.${idx}.custom`)}
+                        onChange={(e) =>
+                          setValue(`ingredients.${idx}.custom`, e.target.value)
+                        }
+                      >
+                        <option value=''>N/A</option>
+                        {customizers.map((custom) => (
+                          <option value={custom} key={custom}>
+                            {startCase(custom)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <button
                       type='button'
                       onClick={() => ingredientRemove(idx)}
-                      className='rounded bg-red-500'
+                      className='flex w-full justify-center gap-2 rounded bg-red-500 font-semibold text-white'
                     >
-                      <XIcon />
+                      Delete
                     </button>
                   </div>
                 ))}
@@ -313,7 +368,7 @@ export default function AddEditForm({ recipeId, type }: Params) {
                       <button
                         type='button'
                         onClick={() => directionsRemove(idx)}
-                        className='rounded bg-red-500'
+                        className='rounded bg-red-500 px-2'
                       >
                         <XIcon />
                       </button>
