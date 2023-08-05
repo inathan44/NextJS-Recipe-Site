@@ -23,10 +23,17 @@ const measurementSchema = z
   .min(1, { message: "Can't be empty" })
   .toLowerCase();
 
+const customSchema = z
+  .string({ invalid_type_error: 'must be a string' })
+  .trim()
+  .min(1, { message: "Can't be empty" })
+  .toLowerCase();
+
 const ingredientsSchema = z.object({
   name: ingredientSchema,
   amount: amountSchema,
   measurement: measurementSchema,
+  custom: customSchema,
 });
 
 const directionsSchema = z.object({ direction: z.string() });
