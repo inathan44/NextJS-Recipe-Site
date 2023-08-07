@@ -1,3 +1,4 @@
+// Model data as comments under a post and number of comments for a post
 const TEST_COMMENTS = [
   'hi this recipe is really good',
   'Hello I would like to make this recipe sometime',
