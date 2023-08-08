@@ -11,7 +11,7 @@ const CommentSection = () => {
       {TEST_COMMENTS.map((comment, idx) => (
         <div className='border-b border-gray-600 py-3' key={idx}>
           <p className='font-semibold'>Ian Nathan</p>
-          <small>3 hours ago</small>
+          <small>3 hours ago.</small>
           <p>{comment}</p>
         </div>
       ))}
