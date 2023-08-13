@@ -4,7 +4,7 @@ import { recipeRef } from '@/firebaseConfig';
 export default async function getAllRecipes() {
   const snapshot = await getDocs(recipeRef);
 
-  const recipes: Recipe[] = [];
+  const recipes: Partial<Recipe>[] = [];
 
   snapshot.docs.forEach((doc) => {
     recipes.push({
