@@ -3,7 +3,7 @@ import { getDoc, doc } from 'firebase/firestore';
 
 export default async function getRecipe(
   recipeId: string
-): Promise<Recipe | undefined> {
+): Promise<Partial<Recipe> | undefined> {
   try {
     const recipeRef = doc(db, 'recipes', recipeId);
 
