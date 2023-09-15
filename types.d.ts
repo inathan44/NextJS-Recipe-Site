@@ -29,3 +29,10 @@ type RecipeSnippet = {
 };
 
 type UserDoc = {};
+
+type Comment = {
+  id: string;
+  author: string;
+  timestamp: Date;
+  commentText: string;
+};
