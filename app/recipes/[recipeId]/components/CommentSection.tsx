@@ -6,6 +6,8 @@ const TEST_COMMENTS = [
 ];
 
 const CommentSection = () => {
+  return <p>Coming soon!</p>;
+
   return (
     <div className='flex flex-col'>
       {TEST_COMMENTS.map((comment, idx) => (

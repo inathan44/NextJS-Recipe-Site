@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { isOwner } from '../utils/documentFunctions';
 
 type Props = {
-  recipe?: Recipe;
+  recipe?: Partial<Recipe>;
 };
 
 const EditRecipeLink = ({ recipe }: Props) => {

@@ -16,6 +16,7 @@ export default async function searchFilterRecipes(searchTerm?: string) {
         image: '',
         tags: [],
         description: '',
+        owner: '',
         ...doc.data(),
       });
     });
@@ -32,6 +33,7 @@ export default async function searchFilterRecipes(searchTerm?: string) {
         image: '',
         tags: [],
         description: '',
+        owner: '',
         ...doc.data(),
       });
     }

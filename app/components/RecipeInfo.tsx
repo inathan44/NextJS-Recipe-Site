@@ -10,7 +10,7 @@ import CommentInput from '../recipes/[recipeId]/components/CommentInput';
 import Background from './Background';
 
 type InfoProps = {
-  recipe: Recipe;
+  recipe: Partial<Recipe>;
 };
 
 export default function RecipeInfo({ recipe }: InfoProps) {
@@ -81,7 +81,7 @@ export default function RecipeInfo({ recipe }: InfoProps) {
           className='justify-between overflow-hidden rounded-t-3xl bg-darker-light px-6 py-4 text-primary-dark dark:bg-darker-dark dark:text-lighter-light'
         >
           <div className='overflow-hidden'>
-            <CommentInput />
+            {/* <CommentInput /> */}
             <CommentSection />
           </div>
         </RecipeSection>

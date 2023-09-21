@@ -121,11 +121,11 @@ export default function AddEditForm({ recipeId, type }: Params) {
 
         setValue(
           'tags',
-          (recipeData?.tags.join(', ') || '') as unknown as string[]
+          (recipeData?.tags!.join(', ') || '') as unknown as string[]
         );
         setValue(
           'directions',
-          recipeData?.directions.map((item) => {
+          recipeData?.directions!.map((item) => {
             return { direction: item };
           }) || []
         );
@@ -293,8 +293,8 @@ export default function AddEditForm({ recipeId, type }: Params) {
                           )
                         }
                       >
-                        <option value=''>Select Measurement</option>
-                        <option value='N/A'>Not Applicable</option>
+                        <option value='0'>Select Measurement</option>
+                        <option value=''>Not Applicable</option>
                         {units.map((unit) => (
                           <option value={unit} key={unit}>
                             {startCase(unit)}

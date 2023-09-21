@@ -20,13 +20,13 @@ const amountSchema = z
 const measurementSchema = z
   .string({ invalid_type_error: 'must be a string' })
   .trim()
-  .min(1, { message: "Can't be empty" })
+  .min(0, { message: "Can't be empty" })
   .toLowerCase();
 
 const customSchema = z
   .string({ invalid_type_error: 'must be a string' })
   .trim()
-  .min(1, { message: "Can't be empty" })
+  .min(0, { message: "Can't be empty" })
   .toLowerCase();
 
 const ingredientsSchema = z.object({

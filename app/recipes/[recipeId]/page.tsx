@@ -21,7 +21,7 @@ type Params = {
 };
 
 export default async function SingleRecipe({ params: { recipeId } }: Params) {
-  const recipeData: Promise<Recipe | undefined> = getRecipe(recipeId);
+  const recipeData: Promise<Partial<Recipe> | undefined> = getRecipe(recipeId);
 
   const recipe = await recipeData;
 
